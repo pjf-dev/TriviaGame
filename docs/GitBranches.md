@@ -61,10 +61,13 @@ second using the Git GUI tools inside Jetbrains IDE's (which Android Studio is b
    ![img.png](new_pull.png)
    ![img.png](create_pull.png)
    ![img.png](create_pull2.png)
+   ![img.png](add_title.png)
 5. ### Resolve Conflicts & Merge
    The last step is to resolve any conflicts the two branches may have, and once ready,
    you can merge the branches to close the pull request. Optionally, you can delete the branch
    you merged from if it's no longer needed
+   ![img.png](merge1.png)
+   ![img.png](merge2.png)
 
 ## Additional Supporting Material
 - [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)  
