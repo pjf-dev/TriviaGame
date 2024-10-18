@@ -2,12 +2,14 @@
 ## Reason
 Working with branches in a git repository allows us to individually work on 
 tasks and features without worrying about commiting / pushing conflicting changes to the same branch
+
 ---
 ## What's a Branch
 You can think of a branch as if it were the branch of a tree where each branch is a copy of the projects code. 
 You take code that exists at the root (main branch), and split off into a new branch where changes don't
 affect anything in the main branch or other branches that exist. Once you're ready to push your
 changes to the main branch, you create a pull request.
+
 ---
 ## Pull Requests
 When a specific branch is seen as complete, then you can create what's a called a pull request
@@ -17,6 +19,7 @@ When merging a pull request into a branch, the code should be reviewed to ensure
 the standards of the main branch. Once that's done, it is analyzed for conflicting code / changes
 which must be resolved before continuing with the merge. If there are no conflicts, then the code 
 in the branch from the pull request becomes a part of the main branch, and the branch is usually deleted from there.
+
 ---
 ## Resolving Conflicts
 As mentioned before, conflicts sometimes occur between two branches since the code in one branch
@@ -25,6 +28,7 @@ opened the pull request) must go through all the conflicting files and changes t
 a single version that will exist after the merge. This usually involves refactoring the code
 depending on what was changed and ensuring everything is working as it should before marking
 everything as resolved
+
 ---
 ## How to Branch
 There's multiple ways to create a branch, but it mostly depends on how you're interacting with
