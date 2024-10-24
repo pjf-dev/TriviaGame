@@ -1,6 +1,6 @@
 package ung.csci3660.fall2024.triviagame.api;
 
-// TODO: Add Documentation
+// Fairly self-explanatory
 public class TriviaQuestion {
 
     private final Type type;
@@ -51,7 +51,8 @@ public class TriviaQuestion {
     public enum Difficulty {
         EASY,
         MEDIUM,
-        HARD
+        HARD,
+        ANY // Used for query only, never for a question
     }
 
 }

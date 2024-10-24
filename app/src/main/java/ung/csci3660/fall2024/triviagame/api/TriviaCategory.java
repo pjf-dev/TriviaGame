@@ -1,6 +1,6 @@
 package ung.csci3660.fall2024.triviagame.api;
 
-// TODO: Add Documentation
+// Fairly self-explanatory
 public class TriviaCategory {
 
     private final int id;
