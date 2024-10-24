@@ -3,22 +3,42 @@ package ung.csci3660.fall2024.triviagame.api;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Add Documentation
+/**
+ * Trivia Response class of generic type T for use with Trivia Callbacks
+ * @param <T> type for response data, usually a list of TriviaQuestions
+ * @see TriviaQuestion
+ * @see TriviaCallback
+ */
 public class TriviaResponse<T> {
 
     public final Type type;
     public final T data;
 
+    /**
+     * Package Private constructor from API response code
+     * Automatically converts code to {@link TriviaResponse.Type}
+     * @param code int code of API response
+     * @param data Response data of type T
+     */
     TriviaResponse(int code, T data) {
         this.type = Type.fromCode(code);
         this.data = data;
     }
 
+    /**
+     * Package Private constructor from Response {@link TriviaResponse.Type}
+     * @param type type of response from API
+     * @param data Response data of type T
+     */
     TriviaResponse(Type type, T data) {
         this.type = type;
         this.data = data;
     }
 
+    /**
+     * TriviaResponse Type Enum
+     * Provides status codes and messages for responses from the Trivia API
+     */
     public enum Type {
         SUCCESS(0, null),
         NO_RESULT(1, "API returned no results for query"),
@@ -37,8 +57,8 @@ public class TriviaResponse<T> {
             this.msg = msg;
         }
 
+        // create code hash map and populate with our Type enum values for easy conversion later
         private static final Map<Integer, Type> codeMap = new HashMap<>();
-
         // Didn't know you could do this, found it after some research on Google and StackOverflow
         static {
             for (Type type : Type.values()) {
@@ -46,6 +66,11 @@ public class TriviaResponse<T> {
             }
         }
 
+        /**
+         * Get TriviaResponse Type enum from API code
+         * @param code API code
+         * @return Trivia Response Type enum
+         */
         public static Type fromCode(int code) {
             return codeMap.getOrDefault(code, UNKNOWN);
         }
