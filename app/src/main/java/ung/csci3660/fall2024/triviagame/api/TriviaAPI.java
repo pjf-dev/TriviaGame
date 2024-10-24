@@ -5,6 +5,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,10 +55,10 @@ public class TriviaAPI {
      * Asynchronous initialization method for Trivia Categories using a ? type TriviaCallback
      * @param force | Should we initialize categories even if already initialized
      * @param callback | Callback to run when API request completes
-     * @return Cancelable API task
+     * @return Cancelable API task, null if no request was needed
      * @see APITask#cancel(boolean)
      */
-    public APITask initializeCategories(boolean force, TriviaCallback<?> callback) {
+    public APITask initializeCategories(@NotNull TriviaCallback<?> callback, boolean force) {
         if (categories == null || force) {
             Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
             return client.queueRequest(request, new Callback() {
@@ -98,14 +99,14 @@ public class TriviaAPI {
 
     // TODO: Implement methods to get questions
 
-    public APITask getQuestions(TriviaCategory category, TriviaQuestion.Difficulty difficulty, int numQuestions, TriviaResponse<List<TriviaQuestion>> callback) {
+    public APITask getQuestions(@Nullable TriviaCategory category, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @NotNull TriviaResponse<List<TriviaQuestion>> callback) {
         // TODO: Implement method
         return null;
     }
 
     /**
      * Get the list of Trivia Categories
-     * Make sure it's initialized first by calling {@link TriviaAPI#initializeCategories(boolean, TriviaCallback)}
+     * Make sure it's initialized first by calling {@link TriviaAPI#initializeCategories(TriviaCallback, boolean)}
      * @return the list of TriviaCategories
      */
     public List<TriviaCategory> getCategories() {
