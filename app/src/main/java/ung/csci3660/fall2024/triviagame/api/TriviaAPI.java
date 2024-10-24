@@ -54,10 +54,10 @@ public class TriviaAPI {
      * Asynchronous initialization method for Trivia Categories using a ? type TriviaCallback
      * @param force | Should we initialize categories even if already initialized
      * @param callback | Callback to run when API request completes
-     * @return ? type Scheduled Future
-     * @see ScheduledFuture#cancel(boolean)
+     * @return Cancelable API task
+     * @see APITask#cancel(boolean)
      */
-    public ScheduledFuture<?> initializeCategories(boolean force, TriviaCallback<?> callback) {
+    public APITask initializeCategories(boolean force, TriviaCallback<?> callback) {
         if (categories == null || force) {
             Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
             return client.queueRequest(request, new Callback() {
@@ -81,6 +81,7 @@ public class TriviaAPI {
                                 newCategories.add(category);
                             }
                             response.body().close();
+                            newCategories.add(new TriviaCategory(-1, "Any"));
                             categories = newCategories;
                             callback.onSuccess(new TriviaResponse<>(0, null));
                         } catch (JSONException e) {
@@ -96,6 +97,11 @@ public class TriviaAPI {
     }
 
     // TODO: Implement methods to get questions
+
+    public APITask getQuestions(TriviaCategory category, TriviaQuestion.Difficulty difficulty, int numQuestions, TriviaResponse<List<TriviaQuestion>> callback) {
+        // TODO: Implement method
+        return null;
+    }
 
     /**
      * Get the list of Trivia Categories
