@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
-// TODO: Add More Documentation?
 /**
  * TriviaAPI Class Singleton
  */
@@ -51,14 +51,16 @@ public class TriviaAPI {
     }
 
     /**
-     * Asynchronous initialization method for Trivia Categories using a no type TriviaCallback
+     * Asynchronous initialization method for Trivia Categories using a ? type TriviaCallback
      * @param force | Should we initialize categories even if already initialized
      * @param callback | Callback to run when API request completes
+     * @return ? type Scheduled Future
+     * @see ScheduledFuture#cancel(boolean)
      */
-    public void initializeCategories(boolean force, TriviaCallback<?> callback) {
+    public ScheduledFuture<?> initializeCategories(boolean force, TriviaCallback<?> callback) {
         if (categories == null || force) {
             Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
-            client.queueRequest(request, new Callback() {
+            return client.queueRequest(request, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     callback.onError(null, e); // Bubble error
@@ -78,6 +80,7 @@ public class TriviaAPI {
                                 TriviaCategory category = new TriviaCategory(jCategory.getInt("id"), jCategory.getString("name"));
                                 newCategories.add(category);
                             }
+                            response.body().close();
                             categories = newCategories;
                             callback.onSuccess(new TriviaResponse<>(0, null));
                         } catch (JSONException e) {
@@ -89,6 +92,7 @@ public class TriviaAPI {
                 }
             });
         }
+        return null;
     }
 
     // TODO: Implement methods to get questions
