@@ -6,17 +6,19 @@ public class TriviaQuestion {
     private final Type type;
     private final Difficulty difficulty;
     private final String question;
-    private final String category; // TODO: Maybe make custom Category class
+    private final String categoryString;
     private final String correctAnswer;
     private final String incorrectAnswers;
+    private final int categoryID;
 
-    public TriviaQuestion(Type type, Difficulty difficulty, String question, String category, String correctAnswer, String incorrectAnswers) {
+    public TriviaQuestion(Type type, Difficulty difficulty, String question, String categoryString, int categoryID, String correctAnswer, String incorrectAnswers) {
         this.type = type;
         this.difficulty = difficulty;
         this.question = question;
-        this.category = category;
+        this.categoryString = categoryString;
         this.correctAnswer = correctAnswer;
         this.incorrectAnswers = incorrectAnswers;
+        this.categoryID = categoryID;
     }
 
     public Type getType() {
@@ -31,8 +33,12 @@ public class TriviaQuestion {
         return question;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryString() {
+        return categoryString;
+    }
+
+    public int getCategoryID() {
+        return categoryID;
     }
 
     public String getCorrectAnswer() {
@@ -45,7 +51,8 @@ public class TriviaQuestion {
 
     public enum Type {
         BOOLEAN,
-        MULTIPLE
+        MULTIPLE,
+        ANY // Used for query only, never for a question
     }
 
     public enum Difficulty {
