@@ -8,10 +8,10 @@ public class TriviaQuestion {
     private final String question;
     private final String categoryString;
     private final String correctAnswer;
-    private final String incorrectAnswers;
+    private final String[] incorrectAnswers;
     private final int categoryID;
 
-    public TriviaQuestion(Type type, Difficulty difficulty, String question, String categoryString, int categoryID, String correctAnswer, String incorrectAnswers) {
+    public TriviaQuestion(Type type, Difficulty difficulty, String question, String categoryString, int categoryID, String correctAnswer, String[] incorrectAnswers) {
         this.type = type;
         this.difficulty = difficulty;
         this.question = question;
@@ -45,7 +45,7 @@ public class TriviaQuestion {
         return correctAnswer;
     }
 
-    public String getIncorrectAnswers() {
+    public String[] getIncorrectAnswers() {
         return incorrectAnswers;
     }
 
