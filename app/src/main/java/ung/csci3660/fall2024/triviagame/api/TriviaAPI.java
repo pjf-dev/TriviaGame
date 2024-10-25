@@ -39,7 +39,6 @@ public class TriviaAPI {
     private final String CATEGORY_EP = "/api_category.php";
     // API Limits | Hard limits, not changeable
     private final int RATE_LIMIT_MILLIS = 5 * 5000; // 1 request per 5 seconds
-    private final int CATEGORIES_PER_REQUEST = 1;
     private final int QS_PER_REQUEST = 50;
 
     // Since TriviaApi is a singleton, we'll only have one instance of RateLimitedClient at any given time
@@ -116,7 +115,7 @@ public class TriviaAPI {
         List<String> params = new ArrayList<>();
 
         if (categoryCode >= 0) {
-            params.add("category=" + categoryCode);
+            params.add("category=" + Math.min(categoryCode, QS_PER_REQUEST));
         }
         if (difficulty != null && difficulty != TriviaQuestion.Difficulty.ANY) {
             params.add("difficulty=" + difficulty.toString().toLowerCase());
