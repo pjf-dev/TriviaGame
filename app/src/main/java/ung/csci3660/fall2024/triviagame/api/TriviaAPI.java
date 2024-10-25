@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 /**
  * TriviaAPI Class Singleton
@@ -100,11 +99,101 @@ public class TriviaAPI {
         return null;
     }
 
-    // TODO: Implement methods to get questions
+    // TODO: Maybe implement convince methods for getting questions so you dont have to specify null
 
-    public APITask getQuestions(@Nullable TriviaCategory category, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @NotNull TriviaResponse<List<TriviaQuestion>> callback) {
-        // TODO: Implement method
-        return null;
+    /**
+     * Get questions list based on query, provides response via TriviaCallback.
+     * Providing null to nullable fields means to query any of that identifier.
+     * You must have called {@link TriviaAPI#initializeCategories(TriviaCallback, boolean)} before calling this method or a null pointer exception will occur.
+     * @param callback Callback to call onError or onSuccess
+     * @param categoryCode Category code to query | Nullable
+     * @param difficulty Difficulty to query | Nullable
+     * @param numQuestions Number of questions to query | Min 1 | Defaults to 10
+     * @param type Type of questions to query | Nullable
+     * @return Cancellable APITask
+     */
+    public APITask getQuestions(@NotNull TriviaCallback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type) {
+        List<String> params = new ArrayList<>();
+
+        if (categoryCode >= 0) {
+            params.add("category=" + categoryCode);
+        }
+        if (difficulty != null && difficulty != TriviaQuestion.Difficulty.ANY) {
+            params.add("difficulty=" + difficulty.toString().toLowerCase());
+        }
+        if (numQuestions != null && numQuestions > 0) {
+            params.add("amount=" + numQuestions);
+        }
+        if (type != null && type != TriviaQuestion.Type.ANY) {
+            params.add("type=" + type.toString().toLowerCase());
+        }
+
+        // Build request string
+        StringBuilder url = new StringBuilder(BASE_URL + API_EP);
+        if (!params.isEmpty()) { url.append("?"); }
+        for (int i = 0; i < params.size(); i++) {
+            if (i > 0) { url.append("&"); }
+            url.append(params.get(i));
+        }
+
+        Request request = new Request.Builder().url(url.toString()).build();
+        return client.queueRequest(request, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                // parse response json
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Any JSON errors will be caught by catch block so we're safe to use json methods
+                        JSONObject resObj = new JSONObject(response.body().string());
+                        response.close();
+                        // TODO: Finish implementing method
+                        int resCode = resObj.getInt("response_code");
+                        JSONArray jQuestions = resObj.getJSONArray("results");
+
+                        List<TriviaQuestion> questions = new ArrayList<>();
+
+                        if (resCode == 0 && jQuestions.length() > 0) {
+                            for (int i = 0; i < jQuestions.length(); i++) {
+                                JSONObject jQuestion = jQuestions.getJSONObject(i);
+                                String category = jQuestion.getString("category");
+
+                                // Get incorrect answer array as String[]
+                                JSONArray jIncorrectAnswers = jQuestion.getJSONArray("incorrect_answers");
+                                String[] incorrectAnswers = new String[jIncorrectAnswers.length()];
+                                for (int j = 0; j < jIncorrectAnswers.length(); j++) {
+                                    incorrectAnswers[j] = jIncorrectAnswers.getString(j);
+                                }
+
+                                TriviaQuestion question = new TriviaQuestion(
+                                        TriviaQuestion.Type.valueOf(jQuestion.getString("type").toUpperCase()),
+                                        TriviaQuestion.Difficulty.valueOf(jQuestion.getString("difficulty").toUpperCase()),
+                                        jQuestion.getString("question"),
+                                        category, categoryMap.getOrDefault(category, -1), // Could technically be null, but we informed consumer to initialize categories first
+                                        jQuestion.getString("correct_answer"),
+                                        incorrectAnswers
+                                );
+                                questions.add(question);
+                            }
+                            callback.onSuccess(new TriviaResponse<>(0, questions));
+                        } else {
+                            callback.onSuccess(new TriviaResponse<>(resCode, null));
+                        }
+                    } catch (JSONException e) {
+                        response.close();
+                        callback.onError(new TriviaResponse<>(-2, null), null);
+                    }
+                } else {
+                    response.close();
+                    callback.onError(new TriviaResponse<>(-1, null), null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                callback.onError(null, e); // Bubble error
+            }
+        });
     }
 
     /**
