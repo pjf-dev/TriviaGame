@@ -12,7 +12,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -45,7 +47,7 @@ public class TriviaAPI {
     // This is necessary because threads are expensive, and RateLimitedClient spawns its own thread to perform HTTP requests
     private final RateLimitedClient client;
 
-    private List<TriviaCategory> categories;
+    private Map<String, Integer> categoryMap;
 
     private TriviaAPI() {
         this.client = new RateLimitedClient(RATE_LIMIT_MILLIS);
@@ -59,7 +61,7 @@ public class TriviaAPI {
      * @see APITask#cancel(boolean)
      */
     public APITask initializeCategories(@NotNull TriviaCallback<?> callback, boolean force) {
-        if (categories == null || force) {
+        if (categoryMap == null || force) {
             Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
             return client.queueRequest(request, new Callback() {
                 @Override
@@ -74,21 +76,22 @@ public class TriviaAPI {
                         try {
                             // Any JSON errors will be caught by catch block so we're safe to use json methods
                             JSONObject resObj = new JSONObject(response.body().string());
+                            response.close();
                             JSONArray jCategories = resObj.getJSONArray("trivia_categories");
-                            List<TriviaCategory> newCategories = new ArrayList<>();
+                            Map<String, Integer> newCategoryMap = new HashMap<>();
                             for (int i = 0; i < jCategories.length(); i++) {
                                 JSONObject jCategory = jCategories.getJSONObject(i);
-                                TriviaCategory category = new TriviaCategory(jCategory.getInt("id"), jCategory.getString("name"));
-                                newCategories.add(category);
+                                newCategoryMap.put(jCategory.getString("name"), jCategory.getInt("id"));
                             }
-                            response.body().close();
-                            newCategories.add(new TriviaCategory(-1, "Any"));
-                            categories = newCategories;
+                            newCategoryMap.put("Any", -1);
+                            categoryMap = newCategoryMap;
                             callback.onSuccess(new TriviaResponse<>(0, null));
                         } catch (JSONException e) {
+                            response.close();
                             callback.onError(new TriviaResponse<>(-2, null), null);
                         }
                     } else {
+                        response.close();
                         callback.onError(new TriviaResponse<>(-1, null), null);
                     }
                 }
@@ -105,12 +108,12 @@ public class TriviaAPI {
     }
 
     /**
-     * Get the list of Trivia Categories
+     * Get the map of Trivia Categories
      * Make sure it's initialized first by calling {@link TriviaAPI#initializeCategories(TriviaCallback, boolean)}
-     * @return the list of TriviaCategories
+     * @return the Map with category name and id
      */
-    public List<TriviaCategory> getCategories() {
-        return categories;
+    public Map<String, Integer> getCategories() {
+        return categoryMap;
     }
 
 }
