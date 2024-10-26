@@ -24,7 +24,7 @@ public class TriviaAPIOnline extends TriviaAPI {
     private final String TOKEN_EP = "/api_token.php";
     private final String CATEGORY_EP = "/api_category.php";
     // API Limits | Hard limits, not changeable
-    private final int RATE_LIMIT_MILLIS = 5 * 5000; // 1 request per 5 seconds
+    private final int RATE_LIMIT_MILLIS = 5 * 1000; // 1 request per 5 seconds
     private final int QS_PER_REQUEST = 50;
 
     // Since TriviaApi is a singleton, we'll only have one instance of RateLimitedClient at any given time
@@ -54,7 +54,7 @@ public class TriviaAPIOnline extends TriviaAPI {
         return client.queueRequest(request, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         // Any JSON errors will be caught by catch block so we're safe to use json methods
@@ -71,6 +71,9 @@ public class TriviaAPIOnline extends TriviaAPI {
                     } catch (JSONException e) {
                         response.close();
                         callback.onError(new TriviaResponse<>(-2, null), null);
+                    } catch (IOException e) {
+                        response.close();
+                        callback.onError(new TriviaResponse<>(-2, null), e);
                     }
                 } else {
                     response.close();
@@ -103,7 +106,7 @@ public class TriviaAPIOnline extends TriviaAPI {
                     callback.onError(null, e); // Bubble error
                 }
                 @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                public void onResponse(@NotNull Call call, @NotNull Response response) {
                     // Initialize categories
                     // Errors handled with error callback
                     if (response.isSuccessful() && response.body() != null) { // This endpoint doesn't provide the api error codes so we use isSuccessful()
@@ -122,7 +125,10 @@ public class TriviaAPIOnline extends TriviaAPI {
                             callback.onSuccess(new TriviaResponse<>(0, newCategoryMap));
                         } catch (JSONException e) {
                             response.close();
-                            callback.onError(new TriviaResponse<>(-2, null), null);
+                            callback.onError(new TriviaResponse<>(-3, null), null);
+                        } catch (IOException e) {
+                            response.close();
+                            callback.onError(new TriviaResponse<>(-2, null), e);
                         }
                     } else {
                         response.close();
@@ -139,14 +145,12 @@ public class TriviaAPIOnline extends TriviaAPI {
         List<String> params = new ArrayList<>();
 
         if (categoryCode >= 0) {
-            params.add("category=" + Math.min(categoryCode, QS_PER_REQUEST));
+            params.add("category=" + categoryCode);
         }
         if (difficulty != null && difficulty != TriviaQuestion.Difficulty.ANY) {
             params.add("difficulty=" + difficulty.toString().toLowerCase());
         }
-        if (numQuestions != null && numQuestions > 0) {
-            params.add("amount=" + numQuestions);
-        }
+        params.add("amount=" + Math.min(numQuestions != null && numQuestions > 0 ? numQuestions : 10, QS_PER_REQUEST));
         if (type != null && type != TriviaQuestion.Type.ANY) {
             params.add("type=" + type.toString().toLowerCase());
         }
@@ -162,11 +166,13 @@ public class TriviaAPIOnline extends TriviaAPI {
             url.append(params.get(i));
         }
 
+        System.out.println(url.toString());
+
         Request request = new Request.Builder().url(url.toString()).build();
         return client.queueRequest(request, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 // parse response json
                 if (response.isSuccessful() && response.body() != null) {
                     try {
@@ -194,7 +200,7 @@ public class TriviaAPIOnline extends TriviaAPI {
                                         TriviaQuestion.Type.valueOf(jQuestion.getString("type").toUpperCase()),
                                         TriviaQuestion.Difficulty.valueOf(jQuestion.getString("difficulty").toUpperCase()),
                                         jQuestion.getString("question"),
-                                        category, categoryMap.getOrDefault(category, -1), // Could technically be null, but we informed consumer to initialize categories first
+                                        category,
                                         jQuestion.getString("correct_answer"),
                                         incorrectAnswers
                                 );
@@ -206,7 +212,10 @@ public class TriviaAPIOnline extends TriviaAPI {
                         }
                     } catch (JSONException e) {
                         response.close();
-                        callback.onError(new TriviaResponse<>(-2, null), null);
+                        callback.onError(new TriviaResponse<>(-3, null), null);
+                    } catch (IOException e) {
+                        response.close();
+                        callback.onError(new TriviaResponse<>(-2, null), e);
                     }
                 } else {
                     response.close();
@@ -219,5 +228,9 @@ public class TriviaAPIOnline extends TriviaAPI {
                 callback.onError(null, e); // Bubble error
             }
         });
+    }
+
+    public void shutdown(boolean now) {
+        client.shutdown(now);
     }
 }
