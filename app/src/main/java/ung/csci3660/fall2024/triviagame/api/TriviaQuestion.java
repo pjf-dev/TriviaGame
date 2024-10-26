@@ -9,16 +9,14 @@ public class TriviaQuestion {
     private final String categoryString;
     private final String correctAnswer;
     private final String[] incorrectAnswers;
-    private final int categoryID;
 
-    public TriviaQuestion(Type type, Difficulty difficulty, String question, String categoryString, int categoryID, String correctAnswer, String[] incorrectAnswers) {
+    public TriviaQuestion(Type type, Difficulty difficulty, String question, String categoryString, String correctAnswer, String[] incorrectAnswers) {
         this.type = type;
         this.difficulty = difficulty;
         this.question = question;
         this.categoryString = categoryString;
         this.correctAnswer = correctAnswer;
         this.incorrectAnswers = incorrectAnswers;
-        this.categoryID = categoryID;
     }
 
     public Type getType() {
@@ -35,10 +33,6 @@ public class TriviaQuestion {
 
     public String getCategoryString() {
         return categoryString;
-    }
-
-    public int getCategoryID() {
-        return categoryID;
     }
 
     public String getCorrectAnswer() {
