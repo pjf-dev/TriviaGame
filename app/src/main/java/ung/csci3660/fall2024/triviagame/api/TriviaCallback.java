@@ -16,8 +16,8 @@ public interface TriviaCallback<T> {
     void onSuccess(TriviaResponse<T> response);
     /**
      * Called on unsuccessful API request
-     * @param response Trivia Response of generic type T | May be null
+     * @param response Trivia Response of Void type | Data will always be null
      * @param e Bubbled IOException from OkHTTP client | May be null
      */
-    void onError(TriviaResponse<?> response, IOException e);
+    void onError(TriviaResponse<Void> response, IOException e);
 }

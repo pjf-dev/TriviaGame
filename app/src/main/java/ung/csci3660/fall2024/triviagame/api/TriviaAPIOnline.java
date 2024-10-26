@@ -94,7 +94,7 @@ public class TriviaAPIOnline extends TriviaAPI {
     }
 
     @Override
-    public APITask initializeCategories(@NotNull TriviaCallback<?> callback, boolean force) {
+    public APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force) {
         if (categoryMap == null || force) {
             Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
             return client.queueRequest(request, new Callback() {
@@ -119,7 +119,7 @@ public class TriviaAPIOnline extends TriviaAPI {
                             }
                             newCategoryMap.put("Any", -1);
                             categoryMap = newCategoryMap;
-                            callback.onSuccess(new TriviaResponse<>(0, null));
+                            callback.onSuccess(new TriviaResponse<>(0, newCategoryMap));
                         } catch (JSONException e) {
                             response.close();
                             callback.onError(new TriviaResponse<>(-2, null), null);
