@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 public class TriviaAPIOffline extends TriviaAPI {
 
@@ -14,7 +15,7 @@ public class TriviaAPIOffline extends TriviaAPI {
     }
 
     @Override
-    public APITask initializeCategories(@NotNull TriviaCallback<?> callback, boolean force) {
+    public APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force) {
         return null;
     }
 

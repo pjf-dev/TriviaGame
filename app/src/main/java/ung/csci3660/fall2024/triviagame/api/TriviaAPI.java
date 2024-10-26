@@ -50,14 +50,14 @@ public abstract class TriviaAPI {
     }
 
     /**
-     * Asynchronous initialization method for Trivia Categories using a ? type TriviaCallback
+     * Asynchronous initialization method for Trivia Categories returning categories map in TriviaResponse
      *
      * @param force    | Should we initialize categories even if already initialized
      * @param callback | Callback to run when API request completes
      * @return Cancelable API task, null if no request was needed
      * @see APITask#cancel(boolean)
      */
-    public abstract APITask initializeCategories(@NotNull TriviaCallback<?> callback, boolean force);
+    public abstract APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force);
 
     /**
      * Get questions list based on query, provides response via TriviaCallback.
