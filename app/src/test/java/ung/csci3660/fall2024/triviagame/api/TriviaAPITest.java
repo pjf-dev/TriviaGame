@@ -104,8 +104,8 @@ public class TriviaAPITest {
             assertTrue(question instanceof TriviaQuestion);
             TriviaQuestion q = (TriviaQuestion) question;
             System.out.printf("Q: %s | A: %s | D: %s | T: %s | C: %s | I: %s\n",
-                    q.getQuestion(), q.getCorrectAnswer(), q.getDifficulty(),
-                    q.getType(), q.getCategoryString(), Arrays.toString(q.getIncorrectAnswers()));
+                    q.question(), q.correctAnswer(), q.difficulty(),
+                    q.type(), q.categoryString(), Arrays.toString(q.incorrectAnswers()));
         });
     }
 }
