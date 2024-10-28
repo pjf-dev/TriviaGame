@@ -17,6 +17,11 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 
+/*
+This is just for testing TriviaAPI somewhat manually to see if it worked or had any bugs
+Should not be referenced for TriviaAPI usage as the way it's done here is synchronous rather than async
+ */
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TriviaAPITest {
 

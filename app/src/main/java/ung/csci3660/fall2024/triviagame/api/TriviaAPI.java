@@ -62,7 +62,6 @@ public abstract class TriviaAPI {
     /**
      * Get questions list based on query, provides response via TriviaCallback.
      * Providing null to nullable fields means to query any of that identifier.
-     * You must have called {@link TriviaAPI#initializeCategories(TriviaCallback, boolean)} before calling this method or a null pointer exception will occur.
      *
      * @param callback     Callback to call onError or onSuccess
      * @param categoryCode Category code to query | Nullable
