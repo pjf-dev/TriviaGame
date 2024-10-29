@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LeaderboardScreen">
+
+    <TextView
+        android:id="@+id/triviaGameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="70sp"
+        android:text="TriviaGame"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="30dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="250dp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/firstPlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="1. Player 1 - 100 points"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/secondPlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="2. Player 2 - 90 points"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/thirdPlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="3. Player 3 - 80 points"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/nextPlayerReadyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play again?"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="650dp"
+        android:textSize="25sp" />
+
+</FrameLayout>
