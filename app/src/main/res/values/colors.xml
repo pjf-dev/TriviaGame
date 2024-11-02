@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="backgroundStartColor">#8c26b6</color>
+    <color name="backgroundEndColor">#300145</color>
+    <color name="startGameColor">#03c93b</color>
 </resources>

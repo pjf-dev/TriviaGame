@@ -3,16 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LeaderboardScreen">
+    tools:context=".LeaderboardScreen"
+    android:background="@drawable/purple_gradient_background">
 
     <TextView
         android:id="@+id/triviaGameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="70sp"
-        android:text="TriviaGame"
+        android:text="@string/app_name"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        style="@style/customTextColor"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +30,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="1. Player 1 - 100 points"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            style="@style/customTextColor"/>
 
         <TextView
             android:id="@+id/secondPlace"
@@ -36,7 +39,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="2. Player 2 - 90 points"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            style="@style/customTextColor"/>
 
         <TextView
             android:id="@+id/thirdPlace"
@@ -44,7 +48,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="3. Player 3 - 80 points"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            style="@style/customTextColor"/>
 
     </LinearLayout>
 
@@ -52,9 +57,11 @@
         android:id="@+id/nextPlayerReadyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play again?"
+        android:text="@string/playAgain"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="650dp"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        style="@style/customTextColor"
+        android:backgroundTint="@color/startGameColor"/>
 
 </FrameLayout>

@@ -3,25 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomeScreen">
+    tools:context=".WelcomeScreen"
+    android:background="@drawable/purple_gradient_background"
+    >
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="35sp"
-        android:text="Welcome to"
+        android:layout_height="41dp"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:text="@string/welcome"
+        android:textSize="35sp"
+        style="@style/customTextColor"/>
 
     <TextView
         android:id="@+id/triviaGameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="70sp"
-        android:text="TriviaGame"
+        android:text="@string/app_name"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="80dp" />
+        android:layout_marginTop="80dp"
+        style="@style/customTextColor"/>
 
     <TextView
         android:id="@+id/categoryText"
@@ -29,8 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="220dp"
-        android:text="Choose your category:"
-        android:textSize="30sp" />
+        android:text="@string/chooseCategory"
+        android:textSize="30sp"
+        style="@style/customTextColor"/>
 
     <Spinner
         android:id="@+id/category"
@@ -38,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="300dp"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:minHeight="48dp" />
 
     <TextView
         android:id="@+id/playerCountText"
@@ -46,8 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="420dp"
-        android:text="Player count:"
-        android:textSize="30sp" />
+        android:text="@string/playerCount"
+        android:textSize="30sp"
+        style="@style/customTextColor"/>
 
     <Spinner
         android:id="@+id/spinnerPlayer"
@@ -55,15 +62,18 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="500dp" />
+        android:layout_marginTop="500dp"
+        android:minHeight="48dp"/>
 
     <Button
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Game!"
+        android:text="@string/playButton"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="650dp"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        style="@style/customTextColor"
+        android:backgroundTint="@color/startGameColor"/>
 
 </FrameLayout>
