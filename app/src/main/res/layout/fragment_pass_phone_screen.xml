@@ -38,4 +38,12 @@
         style="@style/customTextColor"
         android:backgroundTint="@color/startGameColor"/>
 
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/homeButton"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp" />
+
 </FrameLayout>
