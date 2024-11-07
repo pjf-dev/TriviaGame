@@ -6,16 +6,6 @@
     tools:context=".LeaderboardScreen"
     android:background="@drawable/purple_gradient_background">
 
-    <TextView
-        android:id="@+id/triviaGameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="70sp"
-        android:text="@string/app_name"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="30dp"
-        style="@style/customTextColor"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
