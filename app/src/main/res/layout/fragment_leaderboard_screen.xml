@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,51 +8,56 @@
     android:background="@drawable/purple_gradient_background">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="250dp"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/firstPlace"
+            style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="1. Player 1 - 100 points"
-            android:textSize="24sp"
-            style="@style/customTextColor"/>
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/secondPlace"
+            style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="2. Player 2 - 90 points"
-            android:textSize="20sp"
-            style="@style/customTextColor"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/thirdPlace"
+            style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="3. Player 3 - 80 points"
-            android:textSize="18sp"
-            style="@style/customTextColor"/>
+            android:textSize="18sp" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/nextPlayerReadyButton"
+        style="@style/customTextColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/playAgain"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="650dp"
+        android:backgroundTint="@color/startGameColor"
+        android:text="@string/playAgain"
         android:textSize="25sp"
-        style="@style/customTextColor"
-        android:backgroundTint="@color/startGameColor"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
