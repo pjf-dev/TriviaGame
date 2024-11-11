@@ -17,11 +17,13 @@ public class GameSession {
     private int currentIndex;
     private GameResult gameResult;
 
-    public GameSession() {
+    public GameSession(TriviaQuestion[] questionsInit) {
         this.api = TriviaAPI.getInstance();
         this.questions = new ArrayList<>();
         this.state = GameResult.GameState.INITIALIZING;
         this.gameResult = new GameResult();
+
+        this.questions.addAll(Arrays.asList(questionsInit));
     }
 
     /**
@@ -36,7 +38,7 @@ public class GameSession {
         try {
             CompletableFuture<List<TriviaQuestion>> future = new CompletableFuture<>();
 
-            api.getQuestions(new TriviaCallback<List<TriviaQuestion>>() {
+            api.getQuestions(new TriviaCallback<>() {
                                  @Override
                                  public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
                                      future.complete(response.data);
