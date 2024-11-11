@@ -15,12 +15,12 @@ public class APIOffline extends TriviaAPI {
     }
 
     @Override
-    public APITask initializeCategories(@NotNull Callback<Map<String, Integer>> callback, boolean force) {
+    public APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force) {
         return null;
     }
 
     @Override
-    public APITask getQuestions(@NotNull Callback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type) {
+    public APITask getQuestions(@NotNull TriviaCallback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type) {
         return null;
     }
 }

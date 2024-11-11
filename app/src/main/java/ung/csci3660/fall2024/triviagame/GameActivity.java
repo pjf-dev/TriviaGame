@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.jetbrains.annotations.NotNull;
 import ung.csci3660.fall2024.triviagame.api.APITask;
 import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
-import ung.csci3660.fall2024.triviagame.api.Callback;
+import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
 import ung.csci3660.fall2024.triviagame.game.GameConfig;
 import ung.csci3660.fall2024.triviagame.game.GameSession;
@@ -65,7 +65,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    public static APITask getQuestions(@NotNull Callback<List<TriviaQuestion>> callback, GameConfig config) {
+    public static APITask getQuestions(@NotNull TriviaCallback<List<TriviaQuestion>> callback, GameConfig config) {
         return TriviaAPI.getInstance().getQuestions(callback, config.getCategoryId(), config.getDifficulty(), config.getNumberOfQuestions(), config.getQuestionType());
     }
 
