@@ -38,13 +38,15 @@
         style="@style/customTextColor"/>
 
     <Spinner
-        android:id="@+id/category"
+        android:id="@+id/categorySpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="300dp"
         android:textSize="20sp"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:spinnerMode="dropdown"
+    />
 
     <TextView
         android:id="@+id/playerCountText"
@@ -63,6 +65,7 @@
         android:textSize="20sp"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="500dp"
+        android:spinnerMode="dropdown"
         android:minHeight="48dp"/>
 
     <Button

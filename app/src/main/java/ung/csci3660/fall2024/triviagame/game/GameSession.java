@@ -38,14 +38,14 @@ public class GameSession {
         try {
             CompletableFuture<List<TriviaQuestion>> future = new CompletableFuture<>();
 
-            api.getQuestions(new TriviaCallback<>() {
+            api.getQuestions(new Callback<>() {
                                  @Override
-                                 public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
+                                 public void onSuccess(Response<List<TriviaQuestion>> response) {
                                      future.complete(response.data);
                                  }
 
                                  @Override
-                                 public void onError(TriviaResponse<Void> response, IOException e) {
+                                 public void onError(Response<Void> response, IOException e) {
                                      future.completeExceptionally(e != null ? e :
                                              new RuntimeException(response.type.msg));
                                  }

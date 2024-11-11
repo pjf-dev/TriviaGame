@@ -15,6 +15,7 @@ public class GameConfig implements Parcelable {
     private final TriviaQuestion.Type questionType;
     private final int numberOfQuestions;
     private final int timePerQuestionSeconds;
+    private final int numPlayers;
 
     private GameConfig(Builder builder) {
         this.categoryId = builder.categoryId;
@@ -22,6 +23,7 @@ public class GameConfig implements Parcelable {
         this.questionType = builder.questionType;
         this.numberOfQuestions = builder.numberOfQuestions;
         this.timePerQuestionSeconds = builder.timePerQuestionSeconds;
+        this.numPlayers = builder.numPlayers;
     }
 
     /**
@@ -33,6 +35,7 @@ public class GameConfig implements Parcelable {
         private TriviaQuestion.Type questionType = TriviaQuestion.Type.ANY; // Default: any type
         private int numberOfQuestions = 10; // Default: 10 questions
         private int timePerQuestionSeconds = 30; // Default: 30 seconds per question
+        private int numPlayers = 1;
 
         public Builder setCategory(int categoryId) {
             this.categoryId = categoryId;
@@ -59,6 +62,11 @@ public class GameConfig implements Parcelable {
             return this;
         }
 
+        public Builder setNumPlayers(int numPlayers) {
+            this.numPlayers = numPlayers;
+            return this;
+        }
+
         public GameConfig build() {
             return new GameConfig(this);
         }
@@ -70,6 +78,7 @@ public class GameConfig implements Parcelable {
         timePerQuestionSeconds = in.readInt();
         difficulty = TriviaQuestion.Difficulty.valueOf(in.readString());
         questionType = TriviaQuestion.Type.valueOf(in.readString());
+        numPlayers = in.readInt();
     }
 
     @Override
@@ -79,6 +88,7 @@ public class GameConfig implements Parcelable {
         dest.writeInt(timePerQuestionSeconds);
         dest.writeString(difficulty.toString());
         dest.writeString(questionType.toString());
+        dest.writeInt(numPlayers);
     }
 
     @Override
@@ -104,4 +114,5 @@ public class GameConfig implements Parcelable {
     public TriviaQuestion.Type getQuestionType() { return questionType; }
     public int getNumberOfQuestions() { return numberOfQuestions; }
     public int getTimePerQuestionSeconds() { return timePerQuestionSeconds; }
+    public int getNumPlayers() { return numPlayers; }
 }

@@ -21,7 +21,7 @@ public abstract class TriviaAPI {
     /**
      * Initialize the TriviaAPI instance
      * @param online | Should we operate in online mode
-     * @param token | Session token for online mode | Can be null for no token or to generate one later with{@link TriviaAPIOnline#initializeToken(TriviaCallback)}
+     * @param token | Session token for online mode | Can be null for no token or to generate one later with{@link APIOnline#initializeToken(Callback)}
      * @param force | Should we create a new instance if one already exists
      * @return The TriviaAPI built from the configuration specified in the parameters
      * @throws IllegalStateException | If the method was called and an instance of TriviaAPI exists and method call doesn't specify force parameter
@@ -29,9 +29,9 @@ public abstract class TriviaAPI {
     public static TriviaAPI initializeAPI(boolean online, @Nullable String token, boolean force) throws IllegalStateException {
         if (instance == null || force) {
             if (online) {
-                instance = new TriviaAPIOnline(token);
+                instance = new APIOnline(token);
             } else {
-                instance = new TriviaAPIOffline();
+                instance = new APIOffline();
             }
         } else throw new IllegalStateException("TriviaAPI has already been initialized");
         return instance;
@@ -42,7 +42,7 @@ public abstract class TriviaAPI {
     protected Map<String, Integer> categoryMap;
     /**
      * Get the map of Trivia Categories
-     * Make sure it's initialized first by calling {@link TriviaAPI#initializeCategories(TriviaCallback, boolean)}
+     * Make sure it's initialized first by calling {@link TriviaAPI#initializeCategories(Callback, boolean)}
      * @return the Map with category name and id
      */
     public Map<String, Integer> getCategories() {
@@ -57,7 +57,7 @@ public abstract class TriviaAPI {
      * @return Cancelable API task, null if no request was needed
      * @see APITask#cancel(boolean)
      */
-    public abstract APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force);
+    public abstract APITask initializeCategories(@NotNull Callback<Map<String, Integer>> callback, boolean force);
 
     /**
      * Get questions list based on query, provides response via TriviaCallback.
@@ -70,5 +70,5 @@ public abstract class TriviaAPI {
      * @param type         Type of questions to query | Nullable
      * @return Cancellable APITask
      */
-    public abstract APITask getQuestions(@NotNull TriviaCallback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type);
+    public abstract APITask getQuestions(@NotNull Callback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type);
 }
