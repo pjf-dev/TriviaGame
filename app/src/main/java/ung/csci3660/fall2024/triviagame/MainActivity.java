@@ -1,11 +1,13 @@
 package ung.csci3660.fall2024.triviagame;
 
 import android.os.Bundle;
-
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
-import ung.csci3660.fall2024.triviagame.api.*;
+import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
+import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
+import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
+import ung.csci3660.fall2024.triviagame.api.TriviaResponse;
 import ung.csci3660.fall2024.triviagame.game.GameConfig;
 
 import java.io.IOException;
@@ -25,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
         // Start loading categories ASAP in the background
         Spinner categorySpinner = findViewById(R.id.categorySpinner);
         // Load categories asynchronously without proper handling | TODO: Add spinner?
-        api.initializeCategories(new Callback<>() {
+        api.initializeCategories(new TriviaCallback<>() {
             @Override
-            public void onSuccess(Response<Map<String, Integer>> response) {
+            public void onSuccess(TriviaResponse<Map<String, Integer>> response) {
                 System.out.println("Success Res");
-                runOnUiThread(() -> {
+                runOnUiThread(() -> { // Update categorySpinner on UI thread
                     ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
                             MainActivity.this, android.R.layout.simple_spinner_item,
                             response.data.keySet().toArray(new String[0]));
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Response<Void> response, IOException e) {
+            public void onError(TriviaResponse<Void> response, IOException e) {
                 // TODO: Error Handle
                 System.out.println("Error res");
                 if (e != null) {
@@ -71,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
                     .build();
 
             // Initialize questions and start GameActivity
-            GameActivity.getQuestions(new Callback<>() {
+            GameActivity.getQuestions(new TriviaCallback<>() {
                 @Override
-                public void onSuccess(Response<List<TriviaQuestion>> response) {
+                public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
                     GameActivity.start(MainActivity.this, config, response.data.toArray(new TriviaQuestion[0]));
                 }
 
                 @Override
-                public void onError(Response<Void> response, IOException e) {
+                public void onError(TriviaResponse<Void> response, IOException e) {
                     // TODO: Error Handle
                 }
             }, config);

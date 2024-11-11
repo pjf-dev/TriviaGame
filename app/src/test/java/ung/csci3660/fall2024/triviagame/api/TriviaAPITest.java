@@ -46,23 +46,23 @@ public class TriviaAPITest {
 
     @Test
     public void B_testInitializeCategories() throws ExecutionException, InterruptedException, TimeoutException {
-        CompletableFuture<Response<?>> future = new CompletableFuture<>();
-        api.initializeCategories(new Callback<>() {
+        CompletableFuture<TriviaResponse<?>> future = new CompletableFuture<>();
+        api.initializeCategories(new TriviaCallback<>() {
             @Override
-            public void onSuccess(Response<Map<String, Integer>> response) {
+            public void onSuccess(TriviaResponse<Map<String, Integer>> response) {
                 future.complete(response);
             }
 
             @Override
-            public void onError(Response<Void> response, IOException e) {
+            public void onError(TriviaResponse<Void> response, IOException e) {
                 if (e != null) {
                     future.completeExceptionally(e);
                 } else future.complete(response);
             }
         }, false);
         // Wait for result
-        Response<?> response = future.get(15, TimeUnit.SECONDS);
-        assertEquals(Response.Type.SUCCESS, response.type);
+        TriviaResponse<?> response = future.get(15, TimeUnit.SECONDS);
+        assertEquals(TriviaResponse.Type.SUCCESS, response.type);
         assertTrue(response.data instanceof Map);
         Map<?, ?> categories = (Map<?, ?>) response.data;
         assertFalse(categories.isEmpty());
@@ -80,23 +80,23 @@ public class TriviaAPITest {
 
     @Test
     public void D_testGetQuestions() {
-        CompletableFuture<Response<?>> future = new CompletableFuture<>();
-        api.getQuestions(new Callback<>() {
+        CompletableFuture<TriviaResponse<?>> future = new CompletableFuture<>();
+        api.getQuestions(new TriviaCallback<>() {
 
             @Override
-            public void onSuccess(Response<List<TriviaQuestion>> response) {
+            public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
                 future.complete(response);
             }
 
             @Override
-            public void onError(Response<Void> response, IOException e) {
+            public void onError(TriviaResponse<Void> response, IOException e) {
                 if (e != null) {
                     future.completeExceptionally(e);
                 } else future.complete(response);
             }
         }, -1, null, null, null);
-        Response<?> response = future.join();
-        assertEquals(Response.Type.SUCCESS, response.type);
+        TriviaResponse<?> response = future.join();
+        assertEquals(TriviaResponse.Type.SUCCESS, response.type);
         assertTrue(response.data instanceof List);
         List<?> questions = (List<?>) response.data;
         assertFalse(questions.isEmpty());

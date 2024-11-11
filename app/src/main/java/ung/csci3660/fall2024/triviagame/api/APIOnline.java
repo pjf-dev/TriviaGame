@@ -1,20 +1,16 @@
 package ung.csci3660.fall2024.triviagame.api;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Request;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,46 +49,39 @@ public class APIOnline extends TriviaAPI {
      * @param callback TriviaCallback of type String
      * @return Cancellable API task
      */
-    public APITask initializeToken(@NotNull Callback<String> callback) {
+    public APITask initializeToken(@NotNull TriviaCallback<String> callback) {
         Request request = new Request.Builder().url(BASE_URL + TOKEN_EP + "?command=request").build();
-
-        URL url;
-        try {
-            url = new URL(BASE_URL + TOKEN_EP + "?command=request");
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e); // Shouldn't ever error
-        }
-        return client.queueRequest(url, new RateLimitedClient.Callback() {
+        return client.queueRequest(request, new Callback() {
 
             @Override
-            public void onResponse(HttpURLConnection response) {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    if (response.getResponseCode() == 200 && response.getContentLength() > 0) {
-                        String body = streamToString(response.getInputStream());
+                    if (response.isSuccessful() && response.body() != null) {
+                        String body = response.body().string();
                         // Any JSON errors will be caught by catch block so we're safe to use json methods
                         JSONObject resObj = new JSONObject(body);
                         int resCode = resObj.getInt("response_code");
                         if (resCode == 0) {
                             String newToken = resObj.getString("token");
                             token = newToken;
-                            callback.onSuccess(new Response<>(0, newToken));
+                            callback.onSuccess(new TriviaResponse<>(0, newToken));
                         } else {
-                            callback.onError(new Response<>(resCode, null), null);
+                            callback.onError(new TriviaResponse<>(resCode, null), null);
                         }
                     } else {
-                        callback.onError(new Response<>(-1, null), null);
+                        callback.onError(new TriviaResponse<>(-1, null), null);
                     }
                 } catch (JSONException e) {
-                    callback.onError(new Response<>(-2, null), null);
+                    callback.onError(new TriviaResponse<>(-2, null), null);
                 } catch (IOException e) {
-                    callback.onError(new Response<>(-2, null), e);
+                    callback.onError(new TriviaResponse<>(-2, null), e);
                 } finally {
-                    response.disconnect();
+                    response.close();
                 }
             }
 
             @Override
-            public void onError(IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 callback.onError(null, e);
             }
         });
@@ -107,29 +96,22 @@ public class APIOnline extends TriviaAPI {
     }
 
     @Override
-    public APITask initializeCategories(@NotNull Callback<Map<String, Integer>> callback, boolean force) {
+    public APITask initializeCategories(@NotNull TriviaCallback<Map<String, Integer>> callback, boolean force) {
         if (categoryMap == null || force) {
-//            Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
-            URL url;
-            try {
-                url = new URL(BASE_URL + CATEGORY_EP);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e); // Should never error
-            }
+            Request request = new Request.Builder().url(BASE_URL + CATEGORY_EP).build();
 
-            return client.queueRequest(url, new RateLimitedClient.Callback() {
+            return client.queueRequest(request, new Callback() {
                 @Override
-                public void onError(IOException e) {
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     callback.onError(null, e); // Bubble error
                 }
                 @Override
-                public void onResponse(HttpURLConnection response) {
+                public void onResponse(@NotNull Call call, @NotNull Response response) {
                     // Initialize categories
                     // Errors handled with error callback
                     try {
-                        if (response.getResponseCode() == 200) { // This endpoint doesn't provide the api error codes so we use isSuccessful()
-
-                            String body = streamToString(response.getInputStream());
+                        if (response.isSuccessful() && response.body() != null) { // This endpoint doesn't provide the api error codes so we use isSuccessful()
+                            String body = response.body().string();
                             // Any JSON errors will be caught by catch block so we're safe to use json methods
                             JSONObject resObj = new JSONObject(body);
                             JSONArray jCategories = resObj.getJSONArray("trivia_categories");
@@ -140,16 +122,16 @@ public class APIOnline extends TriviaAPI {
                             }
                             newCategoryMap.put("Any", -1);
                             categoryMap = newCategoryMap;
-                            callback.onSuccess(new Response<>(0, newCategoryMap));
+                            callback.onSuccess(new TriviaResponse<>(0, newCategoryMap));
                         } else {
-                            callback.onError(new Response<>(-1, null), null);
+                            callback.onError(new TriviaResponse<>(-1, null), null);
                         }
                     } catch (JSONException e) {
-                        callback.onError(new Response<>(-3, null), null);
+                        callback.onError(new TriviaResponse<>(-3, null), null);
                     } catch (IOException e) {
-                        callback.onError(new Response<>(-2, null), e);
+                        callback.onError(new TriviaResponse<>(-2, null), e);
                     } finally {
-                        response.disconnect();
+                        response.close();
                     }
                 }
             });
@@ -158,7 +140,7 @@ public class APIOnline extends TriviaAPI {
     }
 
     @Override
-    public APITask getQuestions(@NotNull Callback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type) {
+    public APITask getQuestions(@NotNull TriviaCallback<List<TriviaQuestion>> callback, int categoryCode, @Nullable TriviaQuestion.Difficulty difficulty, @Nullable Integer numQuestions, @Nullable TriviaQuestion.Type type) {
         List<String> params = new ArrayList<>();
 
         if (categoryCode >= 0) {
@@ -185,23 +167,17 @@ public class APIOnline extends TriviaAPI {
 
 //        System.out.println(url.toString());
 
-//        Request request = new Request.Builder().url(url.toString()).build();
+        Request request = new Request.Builder().url(url.toString()).build();
 
-        URL u;
-        try {
-            u = new URL(url.toString());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e); // Technically should never error if our code is correct
-        }
-        return client.queueRequest(u, new RateLimitedClient.Callback() {
+        return client.queueRequest(request, new Callback() {
 
             @Override
-            public void onResponse(HttpURLConnection response) {
+            public void onResponse(@NotNull Call call, @NotNull okhttp3.Response response) {
                 // parse response json
                 try {
-                    if (response.getResponseCode() == 200) {
+                    if (response.isSuccessful() && response.body() != null) {
                         // Any JSON errors will be caught by catch block so we're safe to use json methods
-                        String body = streamToString(response.getInputStream());
+                        String body = response.body().string();
                         JSONObject resObj = new JSONObject(body);
                         int resCode = resObj.getInt("response_code");
                         JSONArray jQuestions = resObj.getJSONArray("results");
@@ -230,24 +206,24 @@ public class APIOnline extends TriviaAPI {
                                 );
                                 questions.add(question);
                             }
-                            callback.onSuccess(new Response<>(0, questions));
+                            callback.onSuccess(new TriviaResponse<>(0, questions));
                         } else {
-                            callback.onError(new Response<>(resCode, null), null);
+                            callback.onError(new TriviaResponse<>(resCode, null), null);
                         }
                     } else {
-                        callback.onError(new Response<>(-1, null), null);
+                        callback.onError(new TriviaResponse<>(-1, null), null);
                     }
                 } catch (JSONException e) {
-                    callback.onError(new Response<>(-3, null), null);
+                    callback.onError(new TriviaResponse<>(-3, null), null);
                 } catch (IOException e) {
-                    callback.onError(new Response<>(-2, null), e);
+                    callback.onError(new TriviaResponse<>(-2, null), e);
                 } finally {
-                    response.disconnect();
+                    response.close();
                 }
             }
 
             @Override
-            public void onError(IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 callback.onError(null, e); // Bubble error
             }
         });
@@ -255,15 +231,5 @@ public class APIOnline extends TriviaAPI {
 
     public void shutdown(boolean now) {
         client.shutdown(now);
-    }
-
-    private String streamToString(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        for (int length; (length = inputStream.read(buffer)) != -1; ) {
-            result.write(buffer, 0, length);
-        }
-        // StandardCharsets.UTF_8.name() > JDK 7
-        return result.toString(StandardCharsets.UTF_8.name());
     }
 }

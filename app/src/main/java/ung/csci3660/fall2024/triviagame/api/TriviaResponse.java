@@ -7,30 +7,30 @@ import java.util.Map;
  * Trivia Response class of generic type T for use with Trivia Callbacks
  * @param <T> type for response data, usually a list of TriviaQuestions
  * @see TriviaQuestion
- * @see Callback
+ * @see TriviaCallback
  */
-public class Response<T> {
+public class TriviaResponse<T> {
 
     public final Type type;
     public final T data;
 
     /**
      * Package Private constructor from API response code
-     * Automatically converts code to {@link Response.Type}
+     * Automatically converts code to {@link TriviaResponse.Type}
      * @param code int code of API response
      * @param data Response data of type T
      */
-    Response(int code, T data) {
+    TriviaResponse(int code, T data) {
         this.type = Type.fromCode(code);
         this.data = data;
     }
 
     /**
-     * Package Private constructor from Response {@link Response.Type}
+     * Package Private constructor from Response {@link TriviaResponse.Type}
      * @param type type of response from API
      * @param data Response data of type T
      */
-    Response(Type type, T data) {
+    TriviaResponse(Type type, T data) {
         this.type = type;
         this.data = data;
     }
