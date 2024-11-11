@@ -54,7 +54,7 @@ public class APIOnline extends TriviaAPI {
         return client.queueRequest(request, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         String body = response.body().string();
@@ -136,6 +136,7 @@ public class APIOnline extends TriviaAPI {
                 }
             });
         }
+        callback.onSuccess(new TriviaResponse<>(0, categoryMap)); // Always call callback with category map
         return null;
     }
 
