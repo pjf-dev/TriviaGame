@@ -1,5 +1,7 @@
 package ung.csci3660.fall2024.triviagame.game;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
 
 /**
@@ -7,7 +9,7 @@ import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
  * question type, number of questions, and time allowed per question.
  * Use the Builder class to create an instance of GameConfig.
  */
-public class GameConfig {
+public class GameConfig implements Parcelable {
     private final int categoryId;
     private final TriviaQuestion.Difficulty difficulty;
     private final TriviaQuestion.Type questionType;
@@ -61,6 +63,40 @@ public class GameConfig {
             return new GameConfig(this);
         }
     }
+
+    protected GameConfig(Parcel in) {
+        categoryId = in.readInt();
+        numberOfQuestions = in.readInt();
+        timePerQuestionSeconds = in.readInt();
+        difficulty = TriviaQuestion.Difficulty.valueOf(in.readString());
+        questionType = TriviaQuestion.Type.valueOf(in.readString());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(categoryId);
+        dest.writeInt(numberOfQuestions);
+        dest.writeInt(timePerQuestionSeconds);
+        dest.writeString(difficulty.toString());
+        dest.writeString(questionType.toString());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<GameConfig> CREATOR = new Creator<GameConfig>() {
+        @Override
+        public GameConfig createFromParcel(Parcel in) {
+            return new GameConfig(in);
+        }
+
+        @Override
+        public GameConfig[] newArray(int size) {
+            return new GameConfig[size];
+        }
+    };
 
     // Getters
     public int getCategoryId() { return categoryId; }
