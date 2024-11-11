@@ -26,12 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Start loading categories ASAP in the background
         Spinner categorySpinner = findViewById(R.id.categorySpinner);
-        // Load categories asynchronously without proper handling | TODO: Add spinner?
+        // Load categories asynchronously without proper handling | TODO: Add loading spinner?
         api.initializeCategories(new TriviaCallback<>() {
             @Override
             public void onSuccess(TriviaResponse<Map<String, Integer>> response) {
                 System.out.println("Success Res");
                 runOnUiThread(() -> { // Update categorySpinner on UI thread
+                    // Create ArrayAdapter for category spinner, populating it with the category names
                     ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
                             MainActivity.this, android.R.layout.simple_spinner_item,
                             response.data.keySet().toArray(new String[0]));
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, false);
 
+        // Populate playerSpinner with values 1-5 using an ArrayAdapter
         Spinner playerSpinner = findViewById(R.id.spinnerPlayer);
         ArrayAdapter<Integer> playerAdapter = new ArrayAdapter<>(
                 MainActivity.this, android.R.layout.simple_spinner_item,
@@ -60,19 +62,23 @@ public class MainActivity extends AppCompatActivity {
         playerSpinner.setAdapter(playerAdapter);
         playerSpinner.setSelection(0);
 
-        findViewById(R.id.playButton).setOnClickListener((view) -> {
+        findViewById(R.id.playButton).setOnClickListener((view) -> { // Play button click listener
+            // Use TriviaAPI#categories map to get id of selected item in categorySpinner
             Integer categoryID = api.getCategories().getOrDefault((String) categorySpinner.getSelectedItem(), -1);
+            // Get num players from playerSpinner
             Integer numPlayers = (Integer) playerSpinner.getSelectedItem();
+
+            // Build game config from supplied values / current limitations
             GameConfig config = new GameConfig.Builder()
                     .setCategory(categoryID) // Safely ignore due to getOrDefault
                     .setQuestionType(TriviaQuestion.Type.MULTIPLE)
                     .setDifficulty(TriviaQuestion.Difficulty.ANY) // TODO: Implement Selector?
                     .setNumPlayers(numPlayers)
-                    .setNumberOfQuestions(numPlayers*10)
-                    .setTimePerQuestion(30)
+                    .setNumberOfQuestions(numPlayers*10) // 10 questions per player
+                    .setTimePerQuestion(30) // 30 seconds to answer
                     .build();
 
-            // Initialize questions and start GameActivity
+            // Initialize questions and start GameActivity on success
             GameActivity.getQuestions(new TriviaCallback<>() {
                 @Override
                 public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
@@ -85,5 +91,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, config);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
