@@ -1,5 +1,6 @@
 package ung.csci3660.fall2024.triviagame.api;
 
+import android.util.Base64;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -157,6 +158,7 @@ public class APIOnline extends TriviaAPI {
         if (token != null) {
             params.add("token=" + token);
         }
+        params.add("encode=base64"); // Easier than parsing url encoding
 
         // Build request string
         StringBuilder url = new StringBuilder(BASE_URL + API_EP);
@@ -188,21 +190,21 @@ public class APIOnline extends TriviaAPI {
                         if (resCode == 0 && jQuestions.length() > 0) {
                             for (int i = 0; i < jQuestions.length(); i++) {
                                 JSONObject jQuestion = jQuestions.getJSONObject(i);
-                                String category = jQuestion.getString("category");
+                                String category = parseAPIString(jQuestion.getString("category"));
 
                                 // Get incorrect answer array as String[]
                                 JSONArray jIncorrectAnswers = jQuestion.getJSONArray("incorrect_answers");
                                 String[] incorrectAnswers = new String[jIncorrectAnswers.length()];
                                 for (int j = 0; j < jIncorrectAnswers.length(); j++) {
-                                    incorrectAnswers[j] = jIncorrectAnswers.getString(j);
+                                    incorrectAnswers[j] = parseAPIString(jIncorrectAnswers.getString(j));
                                 }
 
                                 TriviaQuestion question = new TriviaQuestion(
-                                        TriviaQuestion.Type.valueOf(jQuestion.getString("type").toUpperCase()),
-                                        TriviaQuestion.Difficulty.valueOf(jQuestion.getString("difficulty").toUpperCase()),
-                                        jQuestion.getString("question"),
+                                        TriviaQuestion.Type.valueOf(parseAPIString(jQuestion.getString("type")).toUpperCase()),
+                                        TriviaQuestion.Difficulty.valueOf(parseAPIString(jQuestion.getString("difficulty")).toUpperCase()),
+                                        parseAPIString(jQuestion.getString("question")),
                                         category,
-                                        jQuestion.getString("correct_answer"),
+                                        parseAPIString(jQuestion.getString("correct_answer")),
                                         incorrectAnswers
                                 );
                                 questions.add(question);
@@ -228,6 +230,10 @@ public class APIOnline extends TriviaAPI {
                 callback.onError(null, e); // Bubble error
             }
         });
+    }
+
+    private String parseAPIString(String s) {
+        return new String(Base64.decode(s, Base64.DEFAULT));
     }
 
     public void shutdown(boolean now) {
