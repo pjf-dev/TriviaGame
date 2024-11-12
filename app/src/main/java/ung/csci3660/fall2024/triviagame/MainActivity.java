@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             GameActivity.getQuestions(new TriviaCallback<>() {
                 @Override
                 public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
-                    GameActivity.start(MainActivity.this, config, response.data.toArray(new TriviaQuestion[0]));
+                    GameActivity.start(MainActivity.this, config, response.data);
                 }
 
                 @Override

@@ -8,6 +8,21 @@
     android:background="@drawable/purple_gradient_background">
 
     <TextView
+        android:id="@+id/qResultText"
+        style="@style/customTextColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:text="Correct: +1000pts\nTotal Score: 10000pts"
+        android:textAlignment="center"
+        android:textSize="35sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="75dp"
+        />
+
+    <TextView
         android:id="@+id/passPhoneText"
         style="@style/customTextColor"
         android:layout_width="wrap_content"
