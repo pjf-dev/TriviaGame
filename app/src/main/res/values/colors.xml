@@ -5,4 +5,5 @@
     <color name="backgroundStartColor">#8c26b6</color>
     <color name="backgroundEndColor">#300145</color>
     <color name="startGameColor">#03c93b</color>
+    <color name="textColor">#FFFFFF</color>
 </resources>
