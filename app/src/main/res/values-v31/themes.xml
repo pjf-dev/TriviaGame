@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.TriviaGame.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/backgroundStartColor</item>
+<!--        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/splash_logo</item>-->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/backgroundEndColor</item>
+    </style>
+</resources>
