@@ -75,6 +75,7 @@ public class PassPhoneScreen extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         StringBuilder scoreStr = new StringBuilder();
+        scoreStr.append("Player ").append(playerNum).append("\n");
         scoreStr.append(addedScore > 0 ? "Correct: +" : "Incorrect: +")
                 .append(addedScore).append("\n");
         scoreStr.append("Total Score: ").append(totalScore);
