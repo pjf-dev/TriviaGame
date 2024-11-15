@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,6 +21,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PassPhoneScreen extends Fragment {
 
+    /**
+     * Simple event listener interface for when user clicks next user button
+     */
     public interface NextClickedListener {
         void onNextClick();
     }
@@ -27,6 +32,13 @@ public class PassPhoneScreen extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * Static method to initialize new PassPhoneScreen fragment
+     * @param playerNum Index of current player + 1
+     * @param addedScore Amount of score added
+     * @param totalScore Players total score
+     * @return new instance of {@link PassPhoneScreen} ready to be used
+     */
     public static PassPhoneScreen newInstance(int playerNum, int addedScore, int totalScore) {
         PassPhoneScreen fragment = new PassPhoneScreen();
         Bundle args = new Bundle();
@@ -44,6 +56,7 @@ public class PassPhoneScreen extends Fragment {
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
         try {
+            // Bind NextClickListener and GameQuitListener to launching / hosting activity
             nextClickedListener = (NextClickedListener) context;
             quitListener = (GameQuitListener) context;
         } catch (ClassCastException e) {
@@ -74,18 +87,22 @@ public class PassPhoneScreen extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Build score string based on player num, added score, and total score
         StringBuilder scoreStr = new StringBuilder();
         scoreStr.append("Player ").append(playerNum).append("\n");
         scoreStr.append(addedScore > 0 ? "Correct: +" : "Incorrect: +")
                 .append(addedScore).append("\n");
         scoreStr.append("Total Score: ").append(totalScore);
 
+        // Set qResultText view's text to scoreStr
         TextView qResultView = view.findViewById(R.id.qResultText);
         qResultView.setText(scoreStr.toString());
 
+        // Bind next btn click to NextClickedListener
         Button nextBtn = view.findViewById(R.id.nextPlayerReadyButton);
         nextBtn.setOnClickListener(v -> nextClickedListener.onNextClick());
 
+        // Bind quitButton click to GameQuitListener
         Button quitBtn = view.findViewById(R.id.homeButton);
         quitBtn.setOnClickListener(v -> quitListener.onGameQuit());
 

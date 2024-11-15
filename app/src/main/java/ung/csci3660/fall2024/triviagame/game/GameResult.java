@@ -30,13 +30,14 @@ public class GameResult implements Parcelable {
         }
     }
 
+    // Parcelable getter implementation
     protected GameResult(Parcel in) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             scores = in.readArrayList(Integer.class.getClassLoader(), Integer.class);
             correctAnswers = in.readArrayList(Integer.class.getClassLoader(), Integer.class);
             totalAnswered = in.readArrayList(Integer.class.getClassLoader(), Integer.class);
             lastAnswerPoints = in.readArrayList(Integer.class.getClassLoader(), Integer.class);
-        } else {
+        } else { // < API 33
             scores = in.readArrayList(Integer.class.getClassLoader());
             correctAnswers = in.readArrayList(Integer.class.getClassLoader());
             totalAnswered = in.readArrayList(Integer.class.getClassLoader());
@@ -44,6 +45,7 @@ public class GameResult implements Parcelable {
         }
     }
 
+    // Parcelable implementation
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(scores);
@@ -52,11 +54,13 @@ public class GameResult implements Parcelable {
         dest.writeList(lastAnswerPoints);
     }
 
+    // Parcelable implementation
     @Override
     public int describeContents() {
         return 0;
     }
 
+    // Parcelable implementation
     public static final Creator<GameResult> CREATOR = new Creator<>() {
         @Override
         public GameResult createFromParcel(Parcel in) {
@@ -69,6 +73,12 @@ public class GameResult implements Parcelable {
         }
     };
 
+    /**
+     * Adds an answer to the GameResult
+     * @param player Player index number (starting from 0)
+     * @param correct Is the answer correct
+     * @param points Points to add to player score
+     */
     public void addAnswer(int player, boolean correct, int points) {
 //        System.out.printf("P: %s\nL: %s\nS: %s\n", player+1, points, scores.getOrDefault(player, 0) + points);
         if (correct) correctAnswers.set(player, correctAnswers.get(player) + 1);
