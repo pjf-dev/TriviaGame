@@ -15,7 +15,11 @@
         android:layout_marginTop="20dp"
         android:text="@string/welcome"
         android:textSize="35sp"
-        style="@style/customTextColor"/>
+        style="@style/customTextColor"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="15"
+        android:shadowColor="@color/black"/>
 
     <TextView
         android:id="@+id/triviaGameText"
@@ -25,7 +29,11 @@
         android:text="@string/app_name"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="80dp"
-        style="@style/customTextColor"/>
+        style="@style/customTextColor"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="20"
+        android:shadowColor="@color/goldBackground"/>
 
     <TextView
         android:id="@+id/categoryText"
@@ -35,7 +43,11 @@
         android:layout_marginTop="220dp"
         android:text="@string/chooseCategory"
         android:textSize="30sp"
-        style="@style/customTextColor"/>
+        style="@style/customTextColor"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="15"
+        android:shadowColor="@color/black"/>
 
     <Spinner
         android:id="@+id/categorySpinner"
@@ -56,7 +68,11 @@
         android:layout_marginTop="420dp"
         android:text="@string/playerCount"
         android:textSize="30sp"
-        style="@style/customTextColor"/>
+        style="@style/customTextColor"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="15"
+        android:shadowColor="@color/black"/>
 
     <Spinner
         android:id="@+id/spinnerPlayer"
