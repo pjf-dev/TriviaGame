@@ -6,4 +6,5 @@
     <color name="backgroundEndColor">#300145</color>
     <color name="startGameColor">#03c93b</color>
     <color name="textColor">#FFFFFF</color>
+    <color name="goldBackground">#FFD700</color>
 </resources>
