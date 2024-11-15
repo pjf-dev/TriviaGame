@@ -91,5 +91,6 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
     @Override
     public void onGameQuit() {
         this.getOnBackPressedDispatcher().onBackPressed();
+        finish();
     }
 }
