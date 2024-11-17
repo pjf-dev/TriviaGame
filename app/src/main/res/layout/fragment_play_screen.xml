@@ -8,18 +8,22 @@
     android:background="@drawable/purple_gradient_background">
 
     <TextView
+        android:id="@+id/playerNumText"
+        style="@style/customTextColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/customTextColor"
+        android:layout_marginTop="48dp"
         android:gravity="top|center_horizontal"
-        android:layout_marginTop="120dp"
+        android:text="Player #"
         android:textSize="25sp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Player #"
-        android:id="@+id/playerNumText"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="15"
+        android:shadowColor="@color/black"/>
 
     <TextView
         android:id="@+id/questionText"
@@ -27,13 +31,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="288dp"
+        android:layout_marginTop="192dp"
         android:text="What is the capital of France?"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="15"
+        android:shadowColor="@color/black"/>
 
     <RadioGroup
         android:id="@+id/answerGroup"
@@ -44,7 +51,11 @@
         app:layout_constraintTop_toBottomOf="@id/questionText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        style="@style/customTextColor">
+        style="@style/customTextColor"
+        android:shadowDx="-5"
+        android:shadowDy="-5"
+        android:shadowRadius="10"
+        android:shadowColor="@color/black">
 
         <RadioButton
             android:id="@+id/option1"

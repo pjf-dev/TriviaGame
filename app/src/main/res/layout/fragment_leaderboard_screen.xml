@@ -15,34 +15,36 @@
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.192"
+        tools:layout_editor_absoluteX="-16dp">
 
-<!--        <TextView-->
-<!--            android:id="@+id/firstPlace"-->
-<!--            style="@style/customTextColor"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="1. Player 1 - 100 points"-->
-<!--            android:textSize="24sp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/firstPlace"-->
+        <!--            style="@style/customTextColor"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:text="1. Player 1 - 100 points"-->
+        <!--            android:textSize="24sp" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/secondPlace"-->
-<!--            style="@style/customTextColor"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="2. Player 2 - 90 points"-->
-<!--            android:textSize="20sp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/secondPlace"-->
+        <!--            style="@style/customTextColor"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:text="2. Player 2 - 90 points"-->
+        <!--            android:textSize="20sp" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/thirdPlace"-->
-<!--            style="@style/customTextColor"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="3. Player 3 - 80 points"-->
-<!--            android:textSize="18sp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/thirdPlace"-->
+        <!--            style="@style/customTextColor"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:text="3. Player 3 - 80 points"-->
+        <!--            android:textSize="18sp" />-->
 
     </LinearLayout>
 
