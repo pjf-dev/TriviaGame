@@ -1,5 +1,6 @@
 package ung.csci3660.fall2024.triviagame;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -16,10 +17,16 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MediaPlayer musicPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize MediaPlayer with the MP3 file and play it
+        musicPlayer = MediaPlayer.create(this, R.raw.kahoot_music);
+        musicPlayer.start();
 
         // Initialize TriviaAPI
         TriviaAPI api = TriviaAPI.initializeAPI(true, null, false);
@@ -96,5 +103,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (musicPlayer != null) {
+            musicPlayer.release(); // Release resources when done
+            musicPlayer = null;
+        }
     }
 }
