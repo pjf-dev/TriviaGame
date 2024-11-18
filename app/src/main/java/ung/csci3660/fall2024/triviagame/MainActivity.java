@@ -24,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize MediaPlayer with the MP3 file and play it
+        // Initialize MediaPlayer with the MP3 file and play it (also make it loop)
         musicPlayer = MediaPlayer.create(this, R.raw.kahoot_music);
+        musicPlayer.setLooping(true);
         musicPlayer.start();
 
         // Initialize TriviaAPI
