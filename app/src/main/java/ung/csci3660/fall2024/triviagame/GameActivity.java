@@ -94,12 +94,16 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
      */
     @Override
     public void onNextClick() {
-        if (session.hasNextQuestion()) {
-            // Increment player and start next question
-            showNextQuestion(session.nextPlayer(), session.nextQuestion());
+        int nextPlayer = session.nextPlayer();
+        /* Test if we have next question and if next player exists
+        Additionally test if theres more than 1 player remaining on the condition that theres more than one total player at the game start */
+        if (session.hasNextQuestion() && nextPlayer != -1
+            && (config.getNumPlayers() == 1 || session.getPlayersRemaining() > 1)) {
+            // start next question
+            showNextQuestion(nextPlayer, session.nextQuestion());
         } else {
             // End Game
-            LeaderboardScreen leaderboardScreen = LeaderboardScreen.newInstance(session.getGameResult());
+            LeaderboardScreen leaderboardScreen = LeaderboardScreen.newInstance(session.getGameResult(), config);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, leaderboardScreen).commit();
         }
@@ -111,12 +115,17 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
      */
     @Override
     public void onQuestionAnswered(boolean correct) {
-        long now = Calendar.getInstance().getTimeInMillis();
-        GameResult res = session.recordAnswer(correct, now-qStartTime);
+        GameResult res;
+        if (config.getGameMode().equals(GameConfig.Mode.Infinity)) {
+            res = session.recordAnswer(correct);
+        } else {
+            long now = Calendar.getInstance().getTimeInMillis();
+            res = session.recordAnswer(correct, now - qStartTime);
+        }
         int player = session.getCurrentPlayerIndex();
-        System.out.printf("P: %s\nL: %s\nS: %s\n", player+1, res.getLastAnswerPoints(player), res.getScore(player));
+        System.out.printf("P: %s\nL: %s\nS: %s\n", player + 1, res.getLastAnswerPoints(player), res.getScore(player));
         PassPhoneScreen passScreen = PassPhoneScreen.newInstance(
-                player+1, res.getLastAnswerPoints(player), res.getScore(player));
+                player+1, res.getLastAnswerPoints(player), res.getScore(player), config);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, passScreen).commit();
     }

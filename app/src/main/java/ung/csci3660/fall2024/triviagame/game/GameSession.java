@@ -3,10 +3,15 @@ package ung.csci3660.fall2024.triviagame.game;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ung.csci3660.fall2024.triviagame.GameActivity;
+import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
+import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
+import ung.csci3660.fall2024.triviagame.api.TriviaResponse;
 
 /**
  * Core game session handler that manages state, questions, and results
@@ -83,14 +88,36 @@ public class GameSession implements Parcelable {
     }
 
     /**
-     * Records answer results and updates game statistics
+     * Records answer results and updates game statistics | ONLY FOR CLASSIC MODE
      * @param correct Is the provided answer correct?
      * @param responseTimeMillis Time it took for question response in milliseconds
      * @return {@link GameResult} running game result
      */
     public GameResult recordAnswer(boolean correct, long responseTimeMillis) {
+        if (config.getGameMode().equals(GameConfig.Mode.Infinity))
+            throw new UnsupportedOperationException("Cannot call GameSession#recordAnswer(boolean correct, long responseTimeMillis) in Infinity mode.");
         gameResult.addAnswer(playerIndex, correct, calculatePoints(correct, responseTimeMillis, getCurrentQuestion().difficulty()));
         return gameResult;
+    }
+
+    /**
+     * Records answer results and updates game statistics | ONLY FOR INFINITY MODE
+     * @param correct Is the provided answer correct?
+     * @return {@link GameResult} running game result
+     */
+    public GameResult recordAnswer(boolean correct) {
+        if (config.getGameMode().equals(GameConfig.Mode.Classic))
+            throw new UnsupportedOperationException("Cannot call GameSession#recordAnswer(boolean correct) in Classic mode.");
+        gameResult.addAnswer(playerIndex, correct, correct ? 0 : 1);
+        return gameResult;
+    }
+
+    /**
+     * Get the count of players remaining in the game | Used for Infinity mode
+     * @return count of players remaining
+     */
+    public int getPlayersRemaining() {
+        return (int) gameResult.getScores().stream().filter((s) -> s < config.getStrikes()).count();
     }
 
     /**
@@ -114,6 +141,27 @@ public class GameSession implements Parcelable {
      */
     public TriviaQuestion nextQuestion() {
         moveToNext();
+        if (config.getGameMode().equals(GameConfig.Mode.Infinity)
+                && questions.size() - questionIndex == 3) {
+            System.out.println("We're loading questions!!!");
+            /* Start to load more questions
+             We can do this here instead of the in GameActivity because the UI doesn't
+                care about the result and the method is called from the UI */
+            GameActivity.getQuestions(new TriviaCallback<>() {
+                @Override
+                public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
+                    // Load questions into game session
+                    loadQuestions(response.data);
+                    System.out.println("Questions loaded!!!");
+                }
+
+                @Override
+                public void onError(TriviaResponse<Void> response, IOException e) {
+                    // TODO: Do something on error... Dialog??
+                }
+            }, config);
+
+        }
         return getCurrentQuestion();
     }
 
@@ -122,8 +170,23 @@ public class GameSession implements Parcelable {
      * @return Next player's index (starting from 0)
      */
     public int nextPlayer() {
-        playerIndex = playerIndex == config.getNumPlayers()-1 ? 0 : playerIndex + 1;
-        return playerIndex;
+        int startIndex = playerIndex == config.getNumPlayers()-1 ? 0 : playerIndex + 1;
+        if (config.getGameMode().equals(GameConfig.Mode.Infinity)) {
+            for (int i = 0; i < config.getNumPlayers(); i++) {
+                // Simple way to roll over player count using modulo
+                int testIndex = (startIndex + i) % config.getNumPlayers();
+                if (gameResult.getTotalAnswered(testIndex)
+                    - gameResult.getCorrectAnswers(testIndex) < 3) {
+                    // Player isn't eliminated
+                    playerIndex = testIndex;
+                    return playerIndex;
+                }
+            }
+        } else {
+            playerIndex = startIndex;
+            return playerIndex;
+        }
+        return -1; // No players left, game over
     }
 
     /*
