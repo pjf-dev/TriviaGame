@@ -115,6 +115,7 @@ public class PlayScreen extends Fragment {
         int incorrectIndex = 0;
 
         // Sets button with correct index as correct answer, all other button are incorrect answer
+//        System.out.println("Correct Answer: " + question.correctAnswer()); // Cheat
         for (int i = 0; i < answerButtons.size(); i++) {
             RadioButton rb = answerButtons.get(i);
             if (i == correct) {

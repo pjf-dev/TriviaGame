@@ -1,6 +1,7 @@
 package ung.csci3660.fall2024.triviagame;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
+
+import ung.csci3660.fall2024.triviagame.game.GameConfig;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,12 +42,13 @@ public class PassPhoneScreen extends Fragment {
      * @param totalScore Players total score
      * @return new instance of {@link PassPhoneScreen} ready to be used
      */
-    public static PassPhoneScreen newInstance(int playerNum, int addedScore, int totalScore) {
+    public static PassPhoneScreen newInstance(int playerNum, int addedScore, int totalScore, GameConfig config) {
         PassPhoneScreen fragment = new PassPhoneScreen();
         Bundle args = new Bundle();
         args.putInt("playerNum", playerNum);
         args.putInt("addedScore", addedScore);
         args.putInt("totalScore", totalScore);
+        args.putParcelable("config", config);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +69,7 @@ public class PassPhoneScreen extends Fragment {
     }
 
     private int playerNum, addedScore, totalScore;
+    private GameConfig config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,11 @@ public class PassPhoneScreen extends Fragment {
             playerNum = getArguments().getInt("playerNum");
             addedScore = getArguments().getInt("addedScore");
             totalScore = getArguments().getInt("totalScore");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                config = getArguments().getParcelable("config", GameConfig.class);
+            } else {
+                config = getArguments().getParcelable("config");
+            }
         }
     }
 
@@ -90,9 +100,15 @@ public class PassPhoneScreen extends Fragment {
         // Build score string based on player num, added score, and total score
         StringBuilder scoreStr = new StringBuilder();
         scoreStr.append("Player ").append(playerNum).append("\n");
-        scoreStr.append(addedScore > 0 ? "Correct: +" : "Incorrect: +")
-                .append(addedScore).append("\n");
-        scoreStr.append("Total Score: ").append(totalScore);
+        if (config.getGameMode().equals(GameConfig.Mode.Classic)) {
+            scoreStr.append(addedScore > 0 ? "Correct: +" : "Incorrect: +")
+                    .append(addedScore).append("\n");
+            scoreStr.append("Total Score: ").append(totalScore);
+        } else {
+            scoreStr.append(addedScore == 0 ? "Correct!" : totalScore >= config.getStrikes() ? "You've been eliminated." : "Incorrect: +1 Strike")
+                    .append("\n");
+            scoreStr.append("Strikes Remaining: ").append(config.getStrikes() - totalScore);
+        }
 
         // Set qResultText view's text to scoreStr
         TextView qResultView = view.findViewById(R.id.qResultText);

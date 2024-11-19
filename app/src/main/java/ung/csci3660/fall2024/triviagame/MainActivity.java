@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     .setNumPlayers(numPlayers)
                     .setNumberOfQuestions(numPlayers*10) // 10 questions per player
                     .setTimePerQuestion(30) // 30 seconds to answer
+//                    .setMode(GameConfig.Mode.Infinity) // temp
                     .build();
 
             // Initialize questions and start GameActivity on success

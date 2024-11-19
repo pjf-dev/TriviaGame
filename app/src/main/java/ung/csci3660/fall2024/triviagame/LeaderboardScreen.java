@@ -19,12 +19,14 @@ import androidx.fragment.app.Fragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import ung.csci3660.fall2024.triviagame.game.GameConfig;
 import ung.csci3660.fall2024.triviagame.game.GameResult;
 
 public class LeaderboardScreen extends Fragment {
@@ -38,10 +40,11 @@ public class LeaderboardScreen extends Fragment {
      * @param gameResult {@link GameResult} object that represents the game sessions result
      * @return {@link LeaderboardScreen} fragment ready to be used
      */
-    public static LeaderboardScreen newInstance(GameResult gameResult) {
+    public static LeaderboardScreen newInstance(GameResult gameResult, GameConfig config) {
         LeaderboardScreen fragment = new LeaderboardScreen();
         Bundle args = new Bundle();
         args.putParcelable("gameResult", gameResult);
+        args.putParcelable("config", config);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,6 +63,7 @@ public class LeaderboardScreen extends Fragment {
     }
 
     private GameResult gameResult;
+    private GameConfig config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,8 +71,10 @@ public class LeaderboardScreen extends Fragment {
         if (getArguments() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 gameResult = getArguments().getParcelable("gameResult", GameResult.class);
+                config = getArguments().getParcelable("config", GameConfig.class);
             } else { // < API 33
                 gameResult = getArguments().getParcelable("gameResult");
+                config = getArguments().getParcelable("config");
             }
         }
     }
@@ -88,11 +94,23 @@ public class LeaderboardScreen extends Fragment {
         Button playAgainBtn = view.findViewById(R.id.playAgainButton);
         playAgainBtn.setOnClickListener((v) -> quitListener.onGameQuit());
 
-        // Retrieve game scores and map them to a new sorted list of Map.Entries to ensure player num and score remain together
-        List<Integer> gScores = gameResult.getScores();
-        List<Map.Entry<Integer, Integer>> scores = IntStream.range(0, gScores.size())
-                .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, gScores.get(i))).sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList());
-
+        List<Map.Entry<Integer, Integer>> scores;
+        if (config.getGameMode().equals(GameConfig.Mode.Classic)) {
+            // Retrieve game scores and map them to a new sorted list of Map.Entries to ensure player num and score remain together
+            List<Integer> gScores = gameResult.getScores();
+            scores = IntStream.range(0, gScores.size())
+                    .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, gScores.get(i))).sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList());
+        } else {
+            scores = new ArrayList<>();
+            for (int i = 0; i < config.getNumPlayers(); i++) {
+                int correct = gameResult.getCorrectAnswers(i);
+                int strikesRemaining = config.getStrikes() - gameResult.getScore(i);
+                // Make player score = correct answers + strikes remaining.
+                // Ensures first and second place player always have different scores
+                scores.add(new AbstractMap.SimpleEntry<>(i, correct+strikesRemaining));
+            }
+            scores.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        }
         // Layout items for the score text views
         LinearLayout leaderboardLayout = view.findViewById(R.id.leaderboardLayout);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

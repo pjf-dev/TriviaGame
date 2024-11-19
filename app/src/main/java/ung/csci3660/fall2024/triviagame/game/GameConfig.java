@@ -16,6 +16,8 @@ public class GameConfig implements Parcelable {
     private final int numberOfQuestions;
     private final int timePerQuestionSeconds;
     private final int numPlayers;
+    private final Mode gameMode;
+    private final int strikes;
 
     private GameConfig(Builder builder) {
         this.categoryId = builder.categoryId;
@@ -24,6 +26,8 @@ public class GameConfig implements Parcelable {
         this.numberOfQuestions = builder.numberOfQuestions;
         this.timePerQuestionSeconds = builder.timePerQuestionSeconds;
         this.numPlayers = builder.numPlayers;
+        this.gameMode = builder.gameMode;
+        this.strikes = builder.strikes;
     }
 
     /**
@@ -36,6 +40,8 @@ public class GameConfig implements Parcelable {
         private int numberOfQuestions = 10; // Default: 10 questions
         private int timePerQuestionSeconds = 30; // Default: 30 seconds per question
         private int numPlayers = 1;
+        private Mode gameMode = Mode.Classic;
+        private int strikes = 3;
 
         public Builder setCategory(int categoryId) {
             this.categoryId = categoryId;
@@ -67,6 +73,16 @@ public class GameConfig implements Parcelable {
             return this;
         }
 
+        public Builder setMode(Mode gameMode) {
+            this.gameMode = gameMode;
+            return this;
+        }
+
+        public Builder setStrikes(int strikes) {
+            this.strikes = strikes;
+            return this;
+        }
+
         public GameConfig build() {
             return new GameConfig(this);
         }
@@ -79,6 +95,8 @@ public class GameConfig implements Parcelable {
         difficulty = TriviaQuestion.Difficulty.valueOf(in.readString());
         questionType = TriviaQuestion.Type.valueOf(in.readString());
         numPlayers = in.readInt();
+        gameMode = Mode.valueOf(in.readString());
+        strikes = in.readInt();
     }
 
     @Override
@@ -89,6 +107,8 @@ public class GameConfig implements Parcelable {
         dest.writeString(difficulty.toString());
         dest.writeString(questionType.toString());
         dest.writeInt(numPlayers);
+        dest.writeString(gameMode.toString());
+        dest.writeInt(strikes);
     }
 
     @Override
@@ -115,4 +135,11 @@ public class GameConfig implements Parcelable {
     public int getNumberOfQuestions() { return numberOfQuestions; }
     public int getTimePerQuestionSeconds() { return timePerQuestionSeconds; }
     public int getNumPlayers() { return numPlayers; }
+    public Mode getGameMode() { return gameMode; }
+    public int getStrikes() { return strikes; }
+
+    public enum Mode {
+        Classic,
+        Infinity
+    }
 }
