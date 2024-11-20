@@ -114,7 +114,16 @@ public class LeaderboardScreen extends Fragment {
             scoreView.setPadding(dp8, dp8, dp8, dp8);
             scoreView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24 - (i*4));
             scoreView.setText(String.format("%s. Player %s - %s Points", i+1, score.getKey()+1, score.getValue()));
-            scoreView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.textColor));
+            // Set color based on place
+            int color = switch (i) {
+                case 0 -> R.color.goldBackground;
+                case 1 -> R.color.silver;
+                case 2 -> R.color.bronze;
+                default -> R.color.textColor;
+            };
+            scoreView.setTextColor(ContextCompat.getColor(view.getContext(), color));
+            scoreView.setShadowLayer(18f, 0f, 0f, ContextCompat.getColor(view.getContext(), R.color.black));
+
             leaderboardLayout.addView(scoreView);
         }
 
