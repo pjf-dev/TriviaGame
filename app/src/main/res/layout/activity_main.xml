@@ -118,11 +118,11 @@
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Gamemode"
+            android:text="@string/select_gamemode"
             android:layout_gravity="top|center_horizontal"
             android:textAlignment="center"
             android:textSize="30sp"
-            android:layout_marginTop="540dp"
+            android:layout_marginTop="550dp"
             style="@style/customTextColor"/>
     <RadioGroup
         android:id="@+id/modeSelect"
@@ -130,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:layout_marginTop="580dp"
+        android:layout_marginTop="590dp"
         android:orientation="horizontal">
         <RadioButton
             android:id="@+id/classicRadio"
