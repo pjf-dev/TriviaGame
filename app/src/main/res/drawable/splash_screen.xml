@@ -4,8 +4,8 @@
     <item>
         <bitmap
             android:gravity="fill"
-            android:src="@mipmap/icon_background"
-            android:mipMap="true" />
+            android:src="@drawable/icon_background_color"
+            android:mipMap="false" />
     </item>
 
     <item>
