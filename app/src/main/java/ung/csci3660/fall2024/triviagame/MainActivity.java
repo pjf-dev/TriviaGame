@@ -2,22 +2,30 @@ package ung.csci3660.fall2024.triviagame;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
 import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
 import ung.csci3660.fall2024.triviagame.api.TriviaResponse;
 import ung.csci3660.fall2024.triviagame.game.GameConfig;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer musicPlayer;
+
+    private Integer playerCount = 1;
+    private Integer categoryID = -1;
+
+    private TextView categoryDisplay, playerCountDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +38,31 @@ public class MainActivity extends AppCompatActivity {
         musicPlayer.setLooping(true);
         musicPlayer.start();
 
+        categoryDisplay = findViewById(R.id.categoryDisplay);
+        categoryDisplay.setText("Any");
+        playerCountDisplay = findViewById(R.id.playerCountDisplay);
+        playerCountDisplay.setText("1");
+
         // Initialize TriviaAPI
         TriviaAPI api = TriviaAPI.initializeAPI(true, null, false);
 
         // Start loading categories ASAP in the background
-        Spinner categorySpinner = findViewById(R.id.categorySpinner);
         // Load categories asynchronously without proper handling | TODO: Add loading spinner?
         api.initializeCategories(new TriviaCallback<>() {
             @Override
             public void onSuccess(TriviaResponse<Map<String, Integer>> response) {
                 System.out.println("Success Res");
                 runOnUiThread(() -> { // Update categorySpinner on UI thread
-                    // Create ArrayAdapter for category spinner, populating it with the category names
-                    ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                            MainActivity.this, android.R.layout.simple_spinner_item,
-                            response.data.keySet().toArray(new String[0]));
-                    categorySpinner.setAdapter(categoryAdapter);
-                    categorySpinner.setSelection(0);
+                    // Requires UI thread for view + click listener stuff
+                    Button categoryButton = findViewById(R.id.categoryButton);
+                    categoryButton.setOnClickListener((v -> {
+                        PickerDialog dialog = new PickerDialog(400,"Select Category:", api.getCategories(),
+                                ((itemText, itemValue) -> {
+                                    categoryID = itemValue;
+                                    categoryDisplay.setText(itemText);
+                                }));
+                        dialog.show(getLayoutInflater());
+                    }));
                 });
             }
 
@@ -62,28 +78,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }, false);
 
-        // Populate playerSpinner with values 1-5 using an ArrayAdapter
-        Spinner playerSpinner = findViewById(R.id.spinnerPlayer);
-        ArrayAdapter<Integer> playerAdapter = new ArrayAdapter<>(
-                MainActivity.this, android.R.layout.simple_spinner_item,
-                new Integer[] {1,2,3,4,5}
-        );
-        playerSpinner.setAdapter(playerAdapter);
-        playerSpinner.setSelection(0);
+        Button playersButton = findViewById(R.id.playersButton);
+        Map<String, Integer> playersMap = new HashMap<>() {{
+            put("1", 1);
+            put("2", 2);
+            put("3", 3);
+            put("4", 4);
+            put("5", 5);
+        }};
+
+        playersButton.setOnClickListener((v) -> {
+            PickerDialog dialog = new PickerDialog(200, "Player Count:",playersMap,
+                    ((itemText, itemValue) -> {
+                        playerCount = itemValue;
+                        playerCountDisplay.setText(itemText);
+                    }));
+            dialog.show(getLayoutInflater());
+        });
 
         findViewById(R.id.playButton).setOnClickListener((view) -> { // Play button click listener
-            // Use TriviaAPI#categories map to get id of selected item in categorySpinner
-            Integer categoryID = api.getCategories().getOrDefault((String) categorySpinner.getSelectedItem(), -1);
-            // Get num players from playerSpinner
-            Integer numPlayers = (Integer) playerSpinner.getSelectedItem();
-
             // Build game config from supplied values / current limitations
             GameConfig config = new GameConfig.Builder()
                     .setCategory(categoryID) // Safely ignore due to getOrDefault
                     .setQuestionType(TriviaQuestion.Type.MULTIPLE)
                     .setDifficulty(TriviaQuestion.Difficulty.ANY) // TODO: Implement Selector?
-                    .setNumPlayers(numPlayers)
-                    .setNumberOfQuestions(numPlayers*10) // 10 questions per player
+                    .setNumPlayers(playerCount)
+                    .setNumberOfQuestions(playerCount*10) // 10 questions per player
                     .setTimePerQuestion(30) // 30 seconds to answer
                     .build();
 

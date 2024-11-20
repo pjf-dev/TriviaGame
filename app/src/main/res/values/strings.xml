@@ -8,4 +8,6 @@
     <string name="nextPlayerInstructions">Pass the phone to the next player, then click begin!</string>
     <string name="nextPlayerButton">Begin!</string>
     <string name="homeButton">Quit?</string>
+    <string name="categoryButton">Select Category</string>
+    <string name="playersButton">Select Players</string>
 </resources>
