@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -92,6 +93,8 @@ public class PlayScreen extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Make background transparent
+        view.setBackgroundColor(ContextCompat.getColor(view.getContext(), android.R.color.transparent));
 
         // Replace player num text view's text with current player num
         TextView playerNumText = view.findViewById(R.id.playerNumText);
