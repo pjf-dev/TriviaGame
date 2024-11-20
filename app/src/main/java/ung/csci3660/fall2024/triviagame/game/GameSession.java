@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ung.csci3660.fall2024.triviagame.GameActivity;
-import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
 import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
 import ung.csci3660.fall2024.triviagame.api.TriviaResponse;
@@ -117,7 +116,12 @@ public class GameSession implements Parcelable {
      * @return count of players remaining
      */
     public int getPlayersRemaining() {
-        return (int) gameResult.getScores().stream().filter((s) -> s < config.getStrikes()).count();
+        if (config.getGameMode().equals(GameConfig.Mode.Infinity)) {
+            return (int) gameResult.getScores().stream().filter((s) -> s < config.getStrikes()).count();
+        } else {
+            // Classic mode doesn't eliminate, so return total player count
+            return config.getNumPlayers();
+        }
     }
 
     /**
