@@ -10,4 +10,6 @@
     <string name="homeButton">Quit?</string>
     <string name="categoryButton">Select Category</string>
     <string name="playersButton">Select Players</string>
+    <string name="infinity">Infinity</string>
+    <string name="classic">Classic</string>
 </resources>
