@@ -83,6 +83,8 @@ public class LeaderboardScreen extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Make background transparent
+        view.setBackgroundColor(ContextCompat.getColor(view.getContext(), android.R.color.transparent));
 
         // Find and set click listener for playAgainButton
         Button playAgainBtn = view.findViewById(R.id.playAgainButton);
