@@ -12,4 +12,5 @@
     <string name="playersButton">Select Players</string>
     <string name="infinity">Infinity</string>
     <string name="classic">Classic</string>
+    <string name="select_gamemode">Select Gamemode</string>
 </resources>

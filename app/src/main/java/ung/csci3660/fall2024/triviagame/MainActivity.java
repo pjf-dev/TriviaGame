@@ -101,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.playButton).setOnClickListener((view) -> { // Play button click listener
 
+            GameConfig.Mode gameMode = GameConfig.Mode.Classic;
+            if (rg.getCheckedRadioButtonId() == R.id.infinityRadio) {
+                gameMode = GameConfig.Mode.Infinity;
+            }
+
             // Build game config from supplied values / current limitations
             GameConfig config = new GameConfig.Builder()
                     .setCategory(categoryID) // Safely ignore due to getOrDefault
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     .setNumPlayers(playerCount)
                     .setNumberOfQuestions(playerCount*10) // 10 questions per player
                     .setTimePerQuestion(30) // 30 seconds to answer
-//                    .setMode(GameConfig.Mode.Infinity) // temp
+                    .setMode(gameMode) // set game mode
                     .build();
 
             // Initialize questions and start GameActivity on success
