@@ -31,9 +31,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
+        android:textAlignment="center"
         android:layout_marginTop="192dp"
-        android:text="What is the capital of France?"
-        android:textSize="25sp"
+        tools:text="What is the capital of France?"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -63,17 +64,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="96dp"
-            android:text="Option 1"
+            tools:text="Option 1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/categoryText" />
+            app:layout_constraintTop_toBottomOf="@+id/categoryText"
+                android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/option2"
             style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 2"
+            tools:text="Option 2"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/option1" />
@@ -83,7 +86,8 @@
             style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 4"
+            tools:text="Option 4"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/option3" />
@@ -93,7 +97,8 @@
             style="@style/customTextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 3"
+            tools:text="Option 3"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/option2" />
