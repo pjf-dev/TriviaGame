@@ -3,6 +3,7 @@ package ung.csci3660.fall2024.triviagame;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         categoryDisplay.setText("Any");
         playerCountDisplay = findViewById(R.id.playerCountDisplay);
         playerCountDisplay.setText("1");
+
+        RadioGroup rg = findViewById(R.id.modeSelect);
 
         // Initialize TriviaAPI
         TriviaAPI api = TriviaAPI.initializeAPI(true, null, false);
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.playButton).setOnClickListener((view) -> { // Play button click listener
+
             // Build game config from supplied values / current limitations
             GameConfig config = new GameConfig.Builder()
                     .setCategory(categoryID) // Safely ignore due to getOrDefault

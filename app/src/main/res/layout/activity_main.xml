@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="380dp"
         android:text="@string/playerCount"
         android:textSize="30sp"
         style="@style/customTextColor"
@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="470dp"
+        android:layout_marginTop="430dp"
         tools:text="1"
         android:textSize="30sp"
         style="@style/customTextColor"
@@ -109,10 +109,47 @@
         android:layout_height="wrap_content"
         android:text="@string/playersButton"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="520dp"
+        android:layout_marginTop="480dp"
         android:textSize="25sp"
         style="@style/customTextColor"
         android:backgroundTint="@color/bronze"/>
+
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Gamemode"
+            android:layout_gravity="top|center_horizontal"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:layout_marginTop="540dp"
+            style="@style/customTextColor"/>
+    <RadioGroup
+        android:id="@+id/modeSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="580dp"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/classicRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/classic"
+            style="@style/customTextColor"
+            android:textSize="22sp"
+            android:paddingHorizontal="10dp"
+            android:checked="true" />
+        <RadioButton
+                android:id="@+id/infinityRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/infinity"
+                style="@style/customTextColor"
+                android:textSize="22sp"
+                android:paddingHorizontal="10dp" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/playButton"
