@@ -13,4 +13,7 @@
     <string name="infinity">Infinity</string>
     <string name="classic">Classic</string>
     <string name="select_gamemode">Select Gamemode</string>
+    <string name="player_num">Player #</string>
+    <string name="any_text">Any</string>
+    <string name="time_remaining">Time Remaining:</string>
 </resources>

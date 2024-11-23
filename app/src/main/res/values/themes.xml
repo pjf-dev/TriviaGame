@@ -15,4 +15,11 @@
     <style name="Theme.TriviaGame.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
+
+    <style name="textShadow" parent="customTextColor">
+        <item name="android:shadowDx">-5</item>
+        <item name="android:shadowDy">-5</item>
+        <item name="android:shadowRadius">15</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
 </resources>
