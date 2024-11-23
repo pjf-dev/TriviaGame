@@ -21,10 +21,12 @@ import ung.csci3660.fall2024.triviagame.game.GameConfig;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MediaPlayer musicPlayer;
+    public static MediaPlayer musicPlayer;
 
     private Integer playerCount = 1;
     private Integer categoryID = -1;
+
+    private boolean gameActivityActive;
 
     private TextView categoryDisplay, playerCountDisplay;
 
@@ -37,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         // Initialize MediaPlayer with the MP3 file and play it (also make it loop)
         musicPlayer = MediaPlayer.create(this, R.raw.kahoot_music);
         musicPlayer.setLooping(true);
-        musicPlayer.start();
 
         categoryDisplay = findViewById(R.id.categoryDisplay);
         categoryDisplay.setText(R.string.any_text);
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(TriviaResponse<List<TriviaQuestion>> response) {
                     GameActivity.start(MainActivity.this, config, response.data);
+                    gameActivityActive = true;
                 }
 
                 @Override
@@ -132,6 +134,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!gameActivityActive)
+            musicPlayer.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (musicPlayer != null) {
+            musicPlayer.start();
+        }
+    }
+
+    // We only have to control api and music from MainActivity because it stays alive even when GameActivity is active
     @Override
     protected void onDestroy() {
         super.onDestroy();
