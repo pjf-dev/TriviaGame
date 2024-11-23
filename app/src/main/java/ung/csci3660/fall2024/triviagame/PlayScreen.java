@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
 
@@ -98,6 +99,11 @@ public class PlayScreen extends Fragment {
     }
 
     private CountDownTimer countDownTimer;
+    private AtomicLong millisRemaining;
+    private final int tickRate = 100; // 1 tick / 100 ms
+    private ProgressBar timeBar;
+    private TextView timeNumText;
+    private int medColor, lowColor;
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -106,12 +112,16 @@ public class PlayScreen extends Fragment {
         view.setBackgroundColor(ContextCompat.getColor(view.getContext(), android.R.color.transparent));
 
         // setup timebar / timer config early to use in answer event
-        ProgressBar timeBar = view.findViewById(R.id.timeProgress);
+        timeBar = view.findViewById(R.id.timeProgress);
         int totalMillis = questionTime * 1000;
-        int tickRate = 100; // 1 tick / 100 ms
-        int totalTicks = totalMillis / tickRate;
-        timeBar.setMax(totalTicks); // subdivide progress bar based on total ticks
-        timeBar.setProgress(totalTicks);
+        timeBar.setMax(totalMillis / tickRate); // subdivide progress bar based on total ticks
+        if (millisRemaining == null) {
+            millisRemaining = new AtomicLong(totalMillis);
+        }
+        timeBar.setProgress((int) (millisRemaining.get()/tickRate));
+
+        timeNumText = view.findViewById(R.id.timeRemainNum);
+        timeNumText.setText(String.valueOf(questionTime));
 
         // Replace player num text view's text with current player num
         TextView playerNumText = view.findViewById(R.id.playerNumText);
@@ -152,29 +162,39 @@ public class PlayScreen extends Fragment {
         rg.setOnCheckedChangeListener((group, checkedId) -> {
             if (countDownTimer != null) countDownTimer.cancel();
             RadioButton rb = group.findViewById(checkedId);
-            answeredListener.onQuestionAnswered((boolean) rb.getTag(), totalMillis - (timeBar.getProgress() * tickRate));
+            answeredListener.onQuestionAnswered((boolean) rb.getTag(), (int) (totalMillis - millisRemaining.get()));
         });
 
-        TextView timeNumText = view.findViewById(R.id.timeRemainNum);
-        timeNumText.setText(String.valueOf(questionTime));
-
         // Start timer countdown | Tick every 100ms for smooth progress bar
-        countDownTimer = new CountDownTimer(totalMillis, tickRate) {
+
+        // Bind quitBtn click to GameQuitListener
+        Button quitBtn = view.findViewById(R.id.homeButton);
+        quitBtn.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            quitListener.onGameQuit();
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        countDownTimer = new CountDownTimer(millisRemaining.get(), tickRate) {
             private int curSeconds = questionTime;
             private int barPhase = 0;
             @Override
             public void onTick(long millisUntilFinished) {
+                millisRemaining.set(millisUntilFinished);
                 timeBar.setProgress(timeBar.getProgress()-1);
                 int remainSeconds = (int) (millisUntilFinished / 1000);
                 if (remainSeconds != curSeconds) {
                     curSeconds--;
                     timeNumText.setText(String.valueOf(remainSeconds));
                     if (barPhase == 0 && remainSeconds < (questionTime * 0.60)) {
-                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(view.getContext(), R.color.time_med));
+                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.time_med));
                         timeBar.setProgressTintList(csl);
                         barPhase = 1;
                     } else if (barPhase == 1 && remainSeconds < (questionTime * 0.25)) {
-                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(view.getContext(), R.color.time_low));
+                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.time_low));
                         timeBar.setProgressTintList(csl);
                         barPhase = 2;
                     }
@@ -183,15 +203,14 @@ public class PlayScreen extends Fragment {
 
             @Override
             public void onFinish() {
-                answeredListener.onQuestionAnswered(false, totalMillis);
+                answeredListener.onQuestionAnswered(false, questionTime * 1000);
             }
         }.start();
+    }
 
-        // Bind quitBtn click to GameQuitListener
-        Button quitBtn = view.findViewById(R.id.homeButton);
-        quitBtn.setOnClickListener(v -> {
-            countDownTimer.cancel();
-            quitListener.onGameQuit();
-        });
+    @Override
+    public void onPause() {
+        super.onPause();
+        countDownTimer.cancel();
     }
 }
