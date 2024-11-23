@@ -10,4 +10,9 @@
     <color name="silver">#C0C0C0</color>
     <color name="bronze">#b08d57</color>
     <color name="select">#4a4a4a</color>
+
+    <color name="time_high">#5abd57</color>
+    <color name="time_med">#fae73e</color>
+    <color name="time_low">#f74b3b</color>
+    <color name="time_bg">#8a8a8a</color>
 </resources>

@@ -1,12 +1,15 @@
 package ung.csci3660.fall2024.triviagame;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -30,7 +33,7 @@ public class PlayScreen extends Fragment {
      * Simple listener interface for when user answers a question
      */
     public interface QuestionAnsweredListener {
-        void onQuestionAnswered(boolean correct);
+        void onQuestionAnswered(boolean correct, int responseMillis);
     }
 
     public PlayScreen() {
@@ -41,13 +44,15 @@ public class PlayScreen extends Fragment {
      * Static method to easily initialize a new {@link PlayScreen}
      * @param playerNum Current player index
      * @param question {@link TriviaQuestion} to build fragment from
+     * @param questionTime Time allotted (in seconds) to answer question
      * @return new instance of {@link PlayScreen} ready to be used
      */
-    public static PlayScreen newInstance(int playerNum, TriviaQuestion question) {
+    public static PlayScreen newInstance(int playerNum, TriviaQuestion question, int questionTime) {
         PlayScreen fragment = new PlayScreen();
         Bundle args = new Bundle();
         args.putInt("playerNum", playerNum);
         args.putParcelable("question", question);
+        args.putInt("questionTime", questionTime);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,12 +74,14 @@ public class PlayScreen extends Fragment {
 
     private int playerNum;
     private TriviaQuestion question;
+    private int questionTime;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             playerNum = getArguments().getInt("playerNum");
+            questionTime = getArguments().getInt("questionTime");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 question = getArguments().getParcelable("question", TriviaQuestion.class);
             } else { // < API 33
@@ -90,11 +97,21 @@ public class PlayScreen extends Fragment {
         return inflater.inflate(R.layout.fragment_play_screen, container, false);
     }
 
+    private CountDownTimer countDownTimer;
+
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Make background transparent
         view.setBackgroundColor(ContextCompat.getColor(view.getContext(), android.R.color.transparent));
+
+        // setup timebar / timer config early to use in answer event
+        ProgressBar timeBar = view.findViewById(R.id.timeProgress);
+        int totalMillis = questionTime * 1000;
+        int tickRate = 100; // 1 tick / 100 ms
+        int totalTicks = totalMillis / tickRate;
+        timeBar.setMax(totalTicks); // subdivide progress bar based on total ticks
+        timeBar.setProgress(totalTicks);
 
         // Replace player num text view's text with current player num
         TextView playerNumText = view.findViewById(R.id.playerNumText);
@@ -133,12 +150,48 @@ public class PlayScreen extends Fragment {
 
         // Bind radio group check change listener to QuestionAnsweredListener
         rg.setOnCheckedChangeListener((group, checkedId) -> {
+            if (countDownTimer != null) countDownTimer.cancel();
             RadioButton rb = group.findViewById(checkedId);
-            answeredListener.onQuestionAnswered((boolean) rb.getTag());
+            answeredListener.onQuestionAnswered((boolean) rb.getTag(), totalMillis - (timeBar.getProgress() * tickRate));
         });
+
+        TextView timeNumText = view.findViewById(R.id.timeRemainNum);
+        timeNumText.setText(String.valueOf(questionTime));
+
+        // Start timer countdown | Tick every 100ms for smooth progress bar
+        countDownTimer = new CountDownTimer(totalMillis, tickRate) {
+            private int curSeconds = questionTime;
+            private int barPhase = 0;
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeBar.setProgress(timeBar.getProgress()-1);
+                int remainSeconds = (int) (millisUntilFinished / 1000);
+                if (remainSeconds != curSeconds) {
+                    curSeconds--;
+                    timeNumText.setText(String.valueOf(remainSeconds));
+                    if (barPhase == 0 && remainSeconds < (questionTime * 0.60)) {
+                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(view.getContext(), R.color.time_med));
+                        timeBar.setProgressTintList(csl);
+                        barPhase = 1;
+                    } else if (barPhase == 1 && remainSeconds < (questionTime * 0.25)) {
+                        ColorStateList csl = ColorStateList.valueOf(ContextCompat.getColor(view.getContext(), R.color.time_low));
+                        timeBar.setProgressTintList(csl);
+                        barPhase = 2;
+                    }
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                answeredListener.onQuestionAnswered(false, totalMillis);
+            }
+        }.start();
 
         // Bind quitBtn click to GameQuitListener
         Button quitBtn = view.findViewById(R.id.homeButton);
-        quitBtn.setOnClickListener(v -> quitListener.onGameQuit());
+        quitBtn.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            quitListener.onGameQuit();
+        });
     }
 }

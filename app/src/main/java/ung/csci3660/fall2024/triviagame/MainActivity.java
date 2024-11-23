@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         musicPlayer.start();
 
         categoryDisplay = findViewById(R.id.categoryDisplay);
-        categoryDisplay.setText("Any");
+        categoryDisplay.setText(R.string.any_text);
         playerCountDisplay = findViewById(R.id.playerCountDisplay);
         playerCountDisplay.setText("1");
 

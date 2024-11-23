@@ -81,7 +81,7 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
      * @param question The question to display on the {@link PlayScreen}
      */
     private void showNextQuestion(int playerNum, TriviaQuestion question) {
-        PlayScreen screen = PlayScreen.newInstance(playerNum, question);
+        PlayScreen screen = PlayScreen.newInstance(playerNum, question, config.getTimePerQuestionSeconds());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, screen)
                 .commit();
@@ -114,7 +114,7 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
      * @param correct Was the answer correct
      */
     @Override
-    public void onQuestionAnswered(boolean correct) {
+    public void onQuestionAnswered(boolean correct, int responseMillis) {
         GameResult res;
         if (config.getGameMode().equals(GameConfig.Mode.Infinity)) {
             res = session.recordAnswer(correct);

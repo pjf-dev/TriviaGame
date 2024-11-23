@@ -9,11 +9,11 @@
 
     <TextView
         android:id="@+id/qResultText"
-        style="@style/customTextColor"
+        style="@style/textShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:text="Correct: +1000pts\nTotal Score: 10000pts"
+        tools:text="Correct: +1000pts\nTotal Score: 10000pts"
         android:textAlignment="center"
         android:textSize="35sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,17 +24,13 @@
 
     <TextView
         android:id="@+id/passPhoneText"
-        style="@style/customTextColor"
+        style="@style/textShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:text="@string/nextPlayerInstructions"
         android:textAlignment="center"
         android:textSize="35sp"
-        android:shadowDx="-5"
-        android:shadowDy="-5"
-        android:shadowRadius="15"
-        android:shadowColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
