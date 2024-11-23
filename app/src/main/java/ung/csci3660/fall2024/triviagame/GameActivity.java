@@ -130,13 +130,30 @@ public class GameActivity extends AppCompatActivity implements PlayScreen.Questi
                 .replace(R.id.fragment_container, passScreen).commit();
     }
 
+
+    private boolean gameQuit = false;
     /**
      * Click handler for the game "quit" button
      * Also used for handling game exit in {@link LeaderboardScreen}
      */
     @Override
     public void onGameQuit() {
+        gameQuit = true;
         this.getOnBackPressedDispatcher().onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!gameQuit && MainActivity.musicPlayer != null)
+            MainActivity.musicPlayer.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MainActivity.musicPlayer != null && !MainActivity.musicPlayer.isPlaying())
+            MainActivity.musicPlayer.start();
     }
 }
