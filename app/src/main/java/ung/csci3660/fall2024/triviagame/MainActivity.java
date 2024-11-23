@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean gameActivityActive;
 
     private TextView categoryDisplay, playerCountDisplay;
+    private Button playButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,10 @@ public class MainActivity extends AppCompatActivity {
             dialog.show(getLayoutInflater());
         });
 
-        findViewById(R.id.playButton).setOnClickListener((view) -> { // Play button click listener
+        playButton = findViewById(R.id.playButton);
+        playButton.setOnClickListener((view) -> { // Play button click listener
+
+            playButton.setEnabled(false);
 
             GameConfig.Mode gameMode = GameConfig.Mode.Classic;
             if (rg.getCheckedRadioButtonId() == R.id.infinityRadio) {
@@ -130,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onError(TriviaResponse<Void> response, IOException e) {
                     // TODO: Error Handle
+                    runOnUiThread(() -> playButton.setEnabled(true)); // Enable start game button so user can retry
                 }
             }, config);
         });
@@ -145,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        playButton.setEnabled(true);
         if (musicPlayer != null) {
             musicPlayer.start();
         }
