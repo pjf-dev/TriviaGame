@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         playButton.setEnabled(true);
+        gameActivityActive = false;
         if (musicPlayer != null) {
             musicPlayer.start();
         }
