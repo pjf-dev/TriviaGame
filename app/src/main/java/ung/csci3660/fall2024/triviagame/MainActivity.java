@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ung.csci3660.fall2024.triviagame.api.APIOnline;
 import ung.csci3660.fall2024.triviagame.api.TriviaAPI;
 import ung.csci3660.fall2024.triviagame.api.TriviaCallback;
 import ung.csci3660.fall2024.triviagame.api.TriviaQuestion;
@@ -156,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
         if (musicPlayer != null) {
             musicPlayer.release(); // Release resources when done
             musicPlayer = null;
+        }
+        if (TriviaAPI.getInstance() instanceof APIOnline api) {
+            api.shutdown(true);
         }
     }
 }
